@@ -4,12 +4,12 @@ import (
 	"reflect"
 	"testing"
 
-	contr_testdata "github.com/mus-format/musgen-go/testdata/container"
-	generic_testdata "github.com/mus-format/musgen-go/testdata/generic"
-	intr_testdata "github.com/mus-format/musgen-go/testdata/interface"
-	ptr_testdata "github.com/mus-format/musgen-go/testdata/pointer"
-	prim_testdata "github.com/mus-format/musgen-go/testdata/primitive"
-	struct_testdata "github.com/mus-format/musgen-go/testdata/struct"
+	contr_testdata "github.com/mus-format/musgen-go/testutil/container"
+	generic_testdata "github.com/mus-format/musgen-go/testutil/generic"
+	intr_testdata "github.com/mus-format/musgen-go/testutil/interface"
+	ptr_testdata "github.com/mus-format/musgen-go/testutil/pointer"
+	prim_testdata "github.com/mus-format/musgen-go/testutil/primitive"
+	struct_testdata "github.com/mus-format/musgen-go/testutil/struct"
 
 	asserterror "github.com/ymz-ncnk/assert/error"
 )
@@ -71,7 +71,7 @@ func TestClassifier(t *testing.T) {
 			{tp: ptrDefinedInterfaceType, want: true},
 		}
 		for _, c := range testCases {
-			asserterror.Equal(DefinedBasicType(c.tp), c.want, t)
+			asserterror.Equal(t, DefinedBasicType(c.tp), c.want)
 		}
 	})
 
@@ -103,7 +103,7 @@ func TestClassifier(t *testing.T) {
 			{tp: doubleDefinedStructType, want: true},
 		}
 		for _, c := range testCases {
-			asserterror.Equal(DefinedStruct(c.tp), c.want, t)
+			asserterror.Equal(t, DefinedStruct(c.tp), c.want)
 		}
 	})
 
@@ -135,7 +135,7 @@ func TestClassifier(t *testing.T) {
 			{tp: doubleDefinedInterfaceType, want: true},
 		}
 		for _, c := range testCases {
-			asserterror.Equal(DefinedNonEmptyInterface(c.tp), c.want, t)
+			asserterror.Equal(t, DefinedNonEmptyInterface(c.tp), c.want)
 		}
 	})
 }

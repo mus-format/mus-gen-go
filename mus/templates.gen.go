@@ -29,7 +29,7 @@ func init() {
 				{{- else }}
 					{{- $constructorName = "NewArraySer" }}
 				{{- end }}
-				{{ $name }} = ord.{{ $constructorName }}[{{ RelName $ad.ArrType $gops }}, {{ RelName $ad.ElemType $gops }}]({{ $elemSer }}{{ WithComma (ArrayOps $ad) }})
+				{{ $name }} = unsafe.{{ $constructorName }}[{{ RelName $ad.ArrType $gops }}, {{ RelName $ad.ElemType $gops }}]({{ $elemSer }}{{ WithComma (ArrayOps $ad) }})
 			{{- end }}
 {{- /* byte slice type */}}
 			{{- if eq $ad.Kind.String "byteSlice" }}

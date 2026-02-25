@@ -6,7 +6,7 @@ import (
 
 	"github.com/mus-format/musgen-go/data"
 	genops "github.com/mus-format/musgen-go/options/generate"
-	prim_testdata "github.com/mus-format/musgen-go/testdata/primitive"
+	prim_testdata "github.com/mus-format/musgen-go/testutil/primitive"
 	asserterror "github.com/ymz-ncnk/assert/error"
 )
 
@@ -18,7 +18,7 @@ func TestTypeDataBuilderIntegration(t *testing.T) {
 			b    = NewTypeDataBuilder(NewConverter(gops), gops)
 
 			wantTypeData = data.TypeData{
-				FullName:       "testdata.MyInt",
+				FullName:       "testutil.MyInt",
 				SourceFullName: "int",
 
 				Fields: []data.FieldData{
@@ -29,8 +29,8 @@ func TestTypeDataBuilderIntegration(t *testing.T) {
 			wantErr error = nil
 		)
 		d, err := b.BuildDefinedTypeData(reflect.TypeFor[prim_testdata.MyInt](), nil)
-		asserterror.EqualError(err, wantErr, t)
-		asserterror.EqualDeep(d, wantTypeData, t)
+		asserterror.EqualError(t, err, wantErr)
+		asserterror.EqualDeep(t, d, wantTypeData)
 	})
 
 }

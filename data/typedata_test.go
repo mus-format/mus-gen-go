@@ -31,9 +31,9 @@ func TestTypeData(t *testing.T) {
 				Sops:   sops,
 			}
 
-			asserterror.Equal(len(data.SerializedFields()), wantLen, t)
-			asserterror.EqualDeep(data.SerializedFields(),
-				[]FieldData{wantFirst, wantThird}, t)
+			asserterror.Equal(t, len(data.SerializedFields()), wantLen)
+			asserterror.EqualDeep(t, data.SerializedFields(),
+				[]FieldData{wantFirst, wantThird})
 		})
 
 		t.Run("Should work", func(t *testing.T) {
@@ -48,9 +48,9 @@ func TestTypeData(t *testing.T) {
 				Fields: []FieldData{wantFirst, wantSecond, wantThird},
 				Sops:   sops,
 			}
-			asserterror.Equal(len(data.SerializedFields()), wantLen, t)
-			asserterror.EqualDeep(data.SerializedFields(),
-				[]FieldData{wantFirst, wantSecond, wantThird}, t)
+			asserterror.Equal(t, len(data.SerializedFields()), wantLen)
+			asserterror.EqualDeep(t, data.SerializedFields(),
+				[]FieldData{wantFirst, wantSecond, wantThird})
 		})
 
 	})

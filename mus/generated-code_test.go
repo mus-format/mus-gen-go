@@ -4,29 +4,29 @@ import (
 	"testing"
 	"time"
 
-	mus_testdata "github.com/mus-format/mus-go/testdata"
-	muss_testdata "github.com/mus-format/mus-stream-go/testdata"
-	"github.com/mus-format/musgen-go/testdata"
-	contr_testdata "github.com/mus-format/musgen-go/testdata/container"
-	crossgen_testdata "github.com/mus-format/musgen-go/testdata/crossgen"
-	crossgen_pkg "github.com/mus-format/musgen-go/testdata/crossgen/pkg"
-	generic_testdata "github.com/mus-format/musgen-go/testdata/generic"
-	intr_testdata "github.com/mus-format/musgen-go/testdata/interface"
-	intrm_testdata "github.com/mus-format/musgen-go/testdata/interface_marshaller"
-	notunsafe_testdata "github.com/mus-format/musgen-go/testdata/notunsafe"
-	ptr_testdata "github.com/mus-format/musgen-go/testdata/pointer"
-	prim_testdata "github.com/mus-format/musgen-go/testdata/primitive"
-	intrr_testdata "github.com/mus-format/musgen-go/testdata/register_interface"
-	ser_testdata "github.com/mus-format/musgen-go/testdata/ser"
-	ser_pkg "github.com/mus-format/musgen-go/testdata/ser/pkg"
-	stream_testdata "github.com/mus-format/musgen-go/testdata/stream"
-	stream_notunsafe_testdata "github.com/mus-format/musgen-go/testdata/stream_notunsafe"
-	stream_unsafe_testdata "github.com/mus-format/musgen-go/testdata/stream_unsafe"
-	struct_testdata "github.com/mus-format/musgen-go/testdata/struct"
-	sttime_testdata "github.com/mus-format/musgen-go/testdata/struct_time"
-	twopkg_testdata "github.com/mus-format/musgen-go/testdata/two_pkg"
-	pkg_testdata "github.com/mus-format/musgen-go/testdata/two_pkg/pkg"
-	unsafe_testdata "github.com/mus-format/musgen-go/testdata/unsafe"
+	mus_testdata "github.com/mus-format/mus-go/testutil"
+	muss_testdata "github.com/mus-format/mus-stream-go/testutil"
+	"github.com/mus-format/musgen-go/testutil"
+	contr_testdata "github.com/mus-format/musgen-go/testutil/container"
+	crossgen_testdata "github.com/mus-format/musgen-go/testutil/crossgen"
+	crossgen_pkg "github.com/mus-format/musgen-go/testutil/crossgen/pkg"
+	generic_testdata "github.com/mus-format/musgen-go/testutil/generic"
+	intr_testdata "github.com/mus-format/musgen-go/testutil/interface"
+	intrm_testdata "github.com/mus-format/musgen-go/testutil/interface_marshaller"
+	notunsafe_testdata "github.com/mus-format/musgen-go/testutil/notunsafe"
+	ptr_testdata "github.com/mus-format/musgen-go/testutil/pointer"
+	prim_testdata "github.com/mus-format/musgen-go/testutil/primitive"
+	intrr_testdata "github.com/mus-format/musgen-go/testutil/register_interface"
+	ser_testdata "github.com/mus-format/musgen-go/testutil/ser"
+	ser_pkg "github.com/mus-format/musgen-go/testutil/ser/pkg"
+	stream_testdata "github.com/mus-format/musgen-go/testutil/stream"
+	stream_notunsafe_testdata "github.com/mus-format/musgen-go/testutil/stream_notunsafe"
+	stream_unsafe_testdata "github.com/mus-format/musgen-go/testutil/stream_unsafe"
+	struct_testdata "github.com/mus-format/musgen-go/testutil/struct"
+	sttime_testdata "github.com/mus-format/musgen-go/testutil/struct_time"
+	twopkg_testdata "github.com/mus-format/musgen-go/testutil/two_pkg"
+	pkg_testdata "github.com/mus-format/musgen-go/testutil/two_pkg/pkg"
+	unsafe_testdata "github.com/mus-format/musgen-go/testutil/unsafe"
 )
 
 func TestGeneratedCode(t *testing.T) {
@@ -55,7 +55,7 @@ func TestGeneratedCode(t *testing.T) {
 			cases := []prim_testdata.AllMyInt{1}
 			mus_testdata.Test(cases, prim_testdata.AllMyIntMUS, t)
 
-			testdata.TestUnmarshalError(0, testdata.ErrZeroValue,
+			testutil.TestUnmarshalError(0, testutil.ErrZeroValue,
 				prim_testdata.AllMyIntMUS, t)
 		})
 
@@ -63,7 +63,7 @@ func TestGeneratedCode(t *testing.T) {
 			cases := []prim_testdata.AllMyString{"abc"}
 			mus_testdata.Test(cases, prim_testdata.AllMyStringMUS, t)
 
-			testdata.TestUnmarshalError("", testdata.ErrZeroValue,
+			testutil.TestUnmarshalError("", testutil.ErrZeroValue,
 				prim_testdata.AllMyStringMUS, t)
 		})
 	})
@@ -81,8 +81,8 @@ func TestGeneratedCode(t *testing.T) {
 			cases := []contr_testdata.MyArray{{1, 2, 3}}
 			mus_testdata.Test(cases, contr_testdata.MyArrayMUS, t)
 
-			testdata.TestUnmarshalError(contr_testdata.AllMyArray{},
-				testdata.ErrZeroValue,
+			testutil.TestUnmarshalError(contr_testdata.AllMyArray{},
+				testutil.ErrZeroValue,
 				contr_testdata.AllMyArrayMUS, t)
 		})
 
@@ -90,8 +90,8 @@ func TestGeneratedCode(t *testing.T) {
 			cases := []contr_testdata.MyByteSlice{{1, 2, 3}}
 			mus_testdata.Test(cases, contr_testdata.MyByteSliceMUS, t)
 
-			testdata.TestUnmarshalError(contr_testdata.AllMyByteSlice{1},
-				testdata.ErrTooLong,
+			testutil.TestUnmarshalError(contr_testdata.AllMyByteSlice{1},
+				testutil.ErrTooLong,
 				contr_testdata.AllMyByteSliceMUS, t)
 		})
 
@@ -99,8 +99,8 @@ func TestGeneratedCode(t *testing.T) {
 			cases := []contr_testdata.MySlice{{1, 2, 3}}
 			mus_testdata.Test(cases, contr_testdata.MySliceMUS, t)
 
-			testdata.TestUnmarshalError(contr_testdata.AllMySlice{1},
-				testdata.ErrTooLong,
+			testutil.TestUnmarshalError(contr_testdata.AllMySlice{1},
+				testutil.ErrTooLong,
 				contr_testdata.AllMySliceMUS, t)
 		})
 
@@ -108,8 +108,8 @@ func TestGeneratedCode(t *testing.T) {
 			cases := []contr_testdata.MyMap{{1: "hello world"}}
 			mus_testdata.Test(cases, contr_testdata.MyMapMUS, t)
 
-			testdata.TestUnmarshalError(contr_testdata.AllMyMap{1: "hello world"},
-				testdata.ErrTooLong,
+			testutil.TestUnmarshalError(contr_testdata.AllMyMap{1: "hello world"},
+				testutil.ErrTooLong,
 				contr_testdata.AllMyMapMUS, t)
 		})
 	})

@@ -18,6 +18,6 @@ func TestOptions(t *testing.T) {
 		WithField(typeops.WithIgnore()),
 		WithTops(typeops.WithTimeUnit(typeops.Milli)),
 	}, &o)
-	asserterror.EqualDeep(o.Fields, wantFields, t)
-	asserterror.Equal(*o.Tops, *wantTops, t)
+	asserterror.EqualDeep(t, o.Fields, wantFields)
+	asserterror.Equal(t, *o.Tops, *wantTops)
 }

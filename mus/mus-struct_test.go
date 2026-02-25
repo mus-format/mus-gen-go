@@ -9,33 +9,33 @@ import (
 	introps "github.com/mus-format/musgen-go/options/interface"
 	structops "github.com/mus-format/musgen-go/options/struct"
 	typeops "github.com/mus-format/musgen-go/options/type"
-	struct_testdata "github.com/mus-format/musgen-go/testdata/struct"
+	struct_testdata "github.com/mus-format/musgen-go/testutil/struct"
 	assertfatal "github.com/ymz-ncnk/assert/fatal"
 )
 
 func TestStructTypeGeneration(t *testing.T) {
 	g, err := NewCodeGenerator(
-		genops.WithPkgPath("github.com/mus-format/musgen-go/testdata/struct"),
-		genops.WithPackage("testdata"),
-		genops.WithImportAlias("github.com/mus-format/musgen-go/testdata", "common_testdata"),
+		genops.WithPkgPath("github.com/mus-format/musgen-go/testutil/struct"),
+		genops.WithPackage("testutil"),
+		genops.WithImportAlias("github.com/mus-format/musgen-go/testutil", "common_testdata"),
 	)
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
 	err = g.AddDefinedType(reflect.TypeFor[struct_testdata.MyInt]())
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
 	err = g.AddDefinedType(reflect.TypeFor[struct_testdata.MySlice]())
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
 	err = g.AddStruct(reflect.TypeFor[struct_testdata.MyStruct]())
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
 	err = g.AddDTS(reflect.TypeFor[struct_testdata.MyInt]())
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
 	err = g.AddInterface(reflect.TypeFor[struct_testdata.MyInterface](),
 		introps.WithImpl(reflect.TypeFor[struct_testdata.MyInt]()))
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
 	err = g.AddStruct(reflect.TypeFor[struct_testdata.ComplexStruct](),
 		structops.WithField(), // bool
@@ -107,12 +107,12 @@ func TestStructTypeGeneration(t *testing.T) {
 		structops.WithField(), // MySlice
 		structops.WithField(), // MyInterface
 	)
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
 	// generate
 
 	bs, err := g.Generate()
-	assertfatal.EqualError(err, nil, t)
-	err = os.WriteFile("../testdata/struct/mus-format.gen.go", bs, 0644)
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
+	err = os.WriteFile("../testutil/struct/mus-format.gen.go", bs, 0644)
+	assertfatal.EqualError(t, err, nil)
 }

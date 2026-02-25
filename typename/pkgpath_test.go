@@ -23,8 +23,8 @@ func TestStrToPkgPath(t *testing.T) {
 	}
 	for _, c := range testCases {
 		pkgPath, err := StrToPkgPath(c.str)
-		asserterror.EqualError(err, c.wantErr, t)
-		asserterror.Equal(pkgPath, c.wantPkgPath, t)
+		asserterror.EqualError(t, err, c.wantErr)
+		asserterror.Equal(t, pkgPath, c.wantPkgPath)
 	}
 }
 
@@ -44,6 +44,6 @@ func TestPkgPath(t *testing.T) {
 	}
 	for _, c := range testCases {
 		pkg := Package(c.pkgPath.Base())
-		asserterror.Equal(pkg, c.wantPkg, t)
+		asserterror.Equal(t, pkg, c.wantPkg)
 	}
 }

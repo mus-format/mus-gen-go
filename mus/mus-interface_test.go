@@ -7,43 +7,43 @@ import (
 
 	genops "github.com/mus-format/musgen-go/options/generate"
 	introps "github.com/mus-format/musgen-go/options/interface"
-	testdata "github.com/mus-format/musgen-go/testdata/interface"
+	testutil "github.com/mus-format/musgen-go/testutil/interface"
 	assertfatal "github.com/ymz-ncnk/assert/fatal"
 )
 
 func TestInterfaceTypeGeneration(t *testing.T) {
 	g, err := NewCodeGenerator(
-		genops.WithPkgPath("github.com/mus-format/musgen-go/testdata/interface"),
-		genops.WithPackage("testdata"),
+		genops.WithPkgPath("github.com/mus-format/musgen-go/testutil/interface"),
+		genops.WithPackage("testutil"),
 	)
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
-	tp1 := reflect.TypeFor[testdata.Impl1]()
+	tp1 := reflect.TypeFor[testutil.Impl1]()
 	err = g.AddStruct(tp1)
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 	err = g.AddDTS(tp1)
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
-	tp2 := reflect.TypeFor[testdata.Impl2]()
+	tp2 := reflect.TypeFor[testutil.Impl2]()
 	err = g.AddDefinedType(tp2)
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 	err = g.AddDTS(tp2)
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
-	err = g.AddInterface(reflect.TypeFor[testdata.MyInterface](),
+	err = g.AddInterface(reflect.TypeFor[testutil.MyInterface](),
 		introps.WithImpl(tp1),
 		introps.WithImpl(tp2))
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
-	err = g.AddInterface(reflect.TypeFor[testdata.MyAnyInterface](),
+	err = g.AddInterface(reflect.TypeFor[testutil.MyAnyInterface](),
 		introps.WithImpl(tp1),
 		introps.WithImpl(tp2))
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
 	// generate
 
 	bs, err := g.Generate()
-	assertfatal.EqualError(err, nil, t)
-	err = os.WriteFile("../testdata/interface/mus-format.gen.go", bs, 0644)
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
+	err = os.WriteFile("../testutil/interface/mus-format.gen.go", bs, 0644)
+	assertfatal.EqualError(t, err, nil)
 }

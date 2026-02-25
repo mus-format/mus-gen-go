@@ -4,10 +4,10 @@ import (
 	"reflect"
 	"testing"
 
-	container_testdata "github.com/mus-format/musgen-go/testdata/container"
-	ptr_testdata "github.com/mus-format/musgen-go/testdata/pointer"
-	prim_testdata "github.com/mus-format/musgen-go/testdata/primitive"
-	struct_testdata "github.com/mus-format/musgen-go/testdata/struct"
+	container_testdata "github.com/mus-format/musgen-go/testutil/container"
+	ptr_testdata "github.com/mus-format/musgen-go/testutil/pointer"
+	prim_testdata "github.com/mus-format/musgen-go/testutil/primitive"
+	struct_testdata "github.com/mus-format/musgen-go/testutil/struct"
 	asserterror "github.com/ymz-ncnk/assert/error"
 )
 
@@ -69,11 +69,11 @@ func TestTypeCompleteName(t *testing.T) {
 			},
 			{
 				t:                reflect.TypeFor[struct_testdata.MyStruct](),
-				wantCompleteName: "github.com/mus-format/musgen-go/testdata/struct/testdata.MyStruct",
+				wantCompleteName: "github.com/mus-format/musgen-go/testutil/struct/testutil.MyStruct",
 			},
 			{
 				t:                reflect.TypeFor[*struct_testdata.MyStruct](),
-				wantCompleteName: "*github.com/mus-format/musgen-go/testdata/struct/testdata.MyStruct",
+				wantCompleteName: "*github.com/mus-format/musgen-go/testutil/struct/testutil.MyStruct",
 			},
 			{
 				t:       reflect.TypeFor[**int](),
@@ -102,8 +102,8 @@ func TestTypeCompleteName(t *testing.T) {
 		}
 		for _, c := range testCases {
 			cname, err := TypeCompleteName(c.t)
-			asserterror.EqualError(err, c.wantErr, t)
-			asserterror.Equal(cname, c.wantCompleteName, t)
+			asserterror.EqualError(t, err, c.wantErr)
+			asserterror.Equal(t, cname, c.wantCompleteName)
 		}
 	})
 
@@ -164,8 +164,8 @@ func TestTypeCompleteName(t *testing.T) {
 		}
 		for _, c := range testCases {
 			cname, err := SourceTypeCompleteName(c.t)
-			asserterror.EqualError(err, c.wantErr, t)
-			asserterror.Equal(cname, c.wantCompleteName, t)
+			asserterror.EqualError(t, err, c.wantErr)
+			asserterror.Equal(t, cname, c.wantCompleteName)
 		}
 	})
 

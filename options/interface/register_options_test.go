@@ -6,8 +6,8 @@ import (
 
 	structops "github.com/mus-format/musgen-go/options/struct"
 	typeops "github.com/mus-format/musgen-go/options/type"
-	prim_testdata "github.com/mus-format/musgen-go/testdata/primitive"
-	struct_testdata "github.com/mus-format/musgen-go/testdata/struct"
+	prim_testdata "github.com/mus-format/musgen-go/testutil/primitive"
+	struct_testdata "github.com/mus-format/musgen-go/testutil/struct"
 	asserterror "github.com/ymz-ncnk/assert/error"
 )
 
@@ -43,7 +43,7 @@ func TestRegisterOptions(t *testing.T) {
 		WithDefinedTypeImpl(wantDefinedTypeImpls[1].Type, wantDefinedTypeImpls[1].Ops...),
 		WithRegisterMarshaller(),
 	}, &o)
-	asserterror.EqualDeep(o.StructImpls, wantStructImpls, t)
-	asserterror.EqualDeep(o.DefinedTypeImpls, wantDefinedTypeImpls, t)
-	asserterror.Equal(o.Marshaller, wantMarshaller, t)
+	asserterror.EqualDeep(t, o.StructImpls, wantStructImpls)
+	asserterror.EqualDeep(t, o.DefinedTypeImpls, wantDefinedTypeImpls)
+	asserterror.Equal(t, o.Marshaller, wantMarshaller)
 }

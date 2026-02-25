@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/mus-format/musgen-go/data"
-	"github.com/mus-format/musgen-go/data/builders/testdata/mock"
+	"github.com/mus-format/musgen-go/data/builders/testutil/mock"
 	genops "github.com/mus-format/musgen-go/options/generate"
 	typeops "github.com/mus-format/musgen-go/options/type"
 	"github.com/mus-format/musgen-go/typename"
@@ -39,9 +39,9 @@ func TestAnonDataBuilder(t *testing.T) {
 		b := NewAnonDataBuilder(NewTypeDataBuilder(nil, gops), gops)
 		d, ok, err := b.Build("map[[3]int]map[string]pkg.Type", tops)
 
-		asserterror.EqualError(err, wantErr, t)
-		asserterror.Equal(ok, wantOk, t)
-		asserterror.EqualDeep(d, wantData, t)
+		asserterror.EqualError(t, err, wantErr)
+		asserterror.Equal(t, ok, wantOk)
+		asserterror.EqualDeep(t, d, wantData)
 	})
 
 	t.Run("Collect", func(t *testing.T) {
@@ -80,7 +80,7 @@ func TestAnonDataBuilder(t *testing.T) {
 			gops = genops.New()
 			b := NewAnonDataBuilder(NewTypeDataBuilder(conv, gops), gops)
 			b.Collect("string", m, &tops)
-			asserterror.EqualDeep(m, wantM, t)
+			asserterror.EqualDeep(t, m, wantM)
 
 			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 				t.Error(infomap)
@@ -127,7 +127,7 @@ func TestAnonDataBuilder(t *testing.T) {
 			gops = genops.New()
 			b := NewAnonDataBuilder(NewTypeDataBuilder(conv, gops), gops)
 			b.Collect("[3]int", m, &tops)
-			asserterror.EqualDeep(m, wantM, t)
+			asserterror.EqualDeep(t, m, wantM)
 
 			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 				t.Error(infomap)
@@ -177,7 +177,7 @@ func TestAnonDataBuilder(t *testing.T) {
 			gops = genops.New()
 			b := NewAnonDataBuilder(NewTypeDataBuilder(conv, gops), gops)
 			b.Collect("[]int", m, &tops)
-			asserterror.EqualDeep(m, wantM, t)
+			asserterror.EqualDeep(t, m, wantM)
 
 			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 				t.Error(infomap)
@@ -236,7 +236,7 @@ func TestAnonDataBuilder(t *testing.T) {
 			gops = genops.New()
 			b := NewAnonDataBuilder(NewTypeDataBuilder(nil, gops), gops)
 			b.Collect("map[[3]int]map[string]pkg.Type", m, tops)
-			asserterror.EqualDeep(m, wantM, t)
+			asserterror.EqualDeep(t, m, wantM)
 		})
 
 		t.Run("pointer", func(t *testing.T) {
@@ -259,7 +259,7 @@ func TestAnonDataBuilder(t *testing.T) {
 			gops = genops.New()
 			b := NewAnonDataBuilder(NewTypeDataBuilder(nil, gops), gops)
 			b.Collect("*int", m, &tops)
-			asserterror.EqualDeep(m, wantM, t)
+			asserterror.EqualDeep(t, m, wantM)
 		})
 
 		t.Run("pointer of defined type", func(t *testing.T) {
@@ -282,7 +282,7 @@ func TestAnonDataBuilder(t *testing.T) {
 			gops = genops.New()
 			b := NewAnonDataBuilder(NewTypeDataBuilder(nil, gops), gops)
 			b.Collect("*pkg.Type", m, &tops)
-			asserterror.EqualDeep(m, wantM, t)
+			asserterror.EqualDeep(t, m, wantM)
 		})
 
 		t.Run("double pointer", func(t *testing.T) {
@@ -316,7 +316,7 @@ func TestAnonDataBuilder(t *testing.T) {
 			)
 			b := NewAnonDataBuilder(NewTypeDataBuilder(nil, gops), gops)
 			b.Collect("**int", m, &tops)
-			asserterror.EqualDeep(m, wantM, t)
+			asserterror.EqualDeep(t, m, wantM)
 		})
 
 	})

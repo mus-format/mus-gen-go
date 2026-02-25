@@ -8,9 +8,9 @@ import (
 
 	typeops "github.com/mus-format/musgen-go/options/type"
 	"github.com/mus-format/musgen-go/scanner"
-	"github.com/mus-format/musgen-go/scanner/testdata/mock"
-	generic_testdata "github.com/mus-format/musgen-go/testdata/generic"
-	struct_testdata "github.com/mus-format/musgen-go/testdata/struct"
+	"github.com/mus-format/musgen-go/scanner/testutil/mock"
+	generic_testdata "github.com/mus-format/musgen-go/testutil/generic"
+	struct_testdata "github.com/mus-format/musgen-go/testutil/struct"
 	"github.com/mus-format/musgen-go/typename"
 	asserterror "github.com/ymz-ncnk/assert/error"
 	"github.com/ymz-ncnk/mok"
@@ -28,15 +28,15 @@ func TestScan(t *testing.T) {
 				func(tp scanner.Type[typename.CompleteName], tops *typeops.Options) (err error) {
 					var (
 						wantType = scanner.Type[typename.CompleteName]{
-							PkgPath: "github.com/mus-format/musgen-go/testdata/struct",
-							Package: "testdata",
+							PkgPath: "github.com/mus-format/musgen-go/testutil/struct",
+							Package: "testutil",
 							Name:    "MyStruct",
 							Kind:    scanner.Defined,
 						}
 						wantTops = stOps
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				})
 
@@ -45,7 +45,7 @@ func TestScan(t *testing.T) {
 
 			mocks = []*mok.Mock{op.Mock}
 		)
-		asserterror.EqualError(err, nil, t)
+		asserterror.EqualError(t, err, nil)
 		if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 			t.Error(infomap)
 		}
@@ -58,16 +58,16 @@ func TestScan(t *testing.T) {
 					tops *typeops.Options) (err error) {
 					var (
 						wantType = scanner.Type[typename.CompleteName]{
-							PkgPath: "github.com/mus-format/musgen-go/testdata/struct",
+							PkgPath: "github.com/mus-format/musgen-go/testutil/struct",
 							Stars:   "*",
-							Package: "testdata",
+							Package: "testutil",
 							Name:    "MyStruct",
 							Kind:    scanner.Defined,
 						}
 						wantTops *typeops.Options = nil
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				})
 
@@ -76,7 +76,7 @@ func TestScan(t *testing.T) {
 
 			mocks = []*mok.Mock{op.Mock}
 		)
-		asserterror.EqualError(err, nil, t)
+		asserterror.EqualError(t, err, nil)
 		if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 			t.Error(infomap)
 		}
@@ -98,8 +98,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops *typeops.Options = nil
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessType(
 				func(tp scanner.Type[typename.CompleteName],
@@ -115,8 +115,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops *typeops.Options = nil
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				})
 
@@ -125,7 +125,7 @@ func TestScan(t *testing.T) {
 
 			mocks = []*mok.Mock{op.Mock}
 		)
-		asserterror.EqualError(err, nil, t)
+		asserterror.EqualError(t, err, nil)
 		if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 			t.Error(infomap)
 		}
@@ -145,16 +145,16 @@ func TestScan(t *testing.T) {
 					tops *typeops.Options) (err error) {
 					var (
 						wantType = scanner.Type[typename.CompleteName]{
-							PkgPath: "github.com/mus-format/musgen-go/testdata/generic",
-							Package: "testdata",
+							PkgPath: "github.com/mus-format/musgen-go/testutil/generic",
+							Package: "testutil",
 							Name:    "MyTripleParamStruct",
 							Params:  []typename.CompleteName{"int", "string", "uint"},
 							Kind:    scanner.Defined,
 						}
 						wantTops = stOps
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessLeftSquare(func() {
 				//nothing to do
@@ -168,8 +168,8 @@ func TestScan(t *testing.T) {
 					}
 					wantTops *typeops.Options = nil
 				)
-				asserterror.EqualDeep(tp, wantType, t)
-				asserterror.Equal(tops, wantTops, t)
+				asserterror.EqualDeep(t, tp, wantType)
+				asserterror.Equal(t, tops, wantTops)
 				return
 			}).RegisterProcessComma(func() {
 				// nothing to do
@@ -183,8 +183,8 @@ func TestScan(t *testing.T) {
 					}
 					wantTops *typeops.Options = nil
 				)
-				asserterror.EqualDeep(tp, wantType, t)
-				asserterror.Equal(tops, wantTops, t)
+				asserterror.EqualDeep(t, tp, wantType)
+				asserterror.Equal(t, tops, wantTops)
 				return
 			}).RegisterProcessComma(func() {
 				// nothing to do
@@ -198,8 +198,8 @@ func TestScan(t *testing.T) {
 					}
 					wantTops *typeops.Options = nil
 				)
-				asserterror.EqualDeep(tp, wantType, t)
-				asserterror.Equal(tops, wantTops, t)
+				asserterror.EqualDeep(t, tp, wantType)
+				asserterror.Equal(t, tops, wantTops)
 				return
 			}).RegisterProcessRightSquare(func() {
 				// nothing to do
@@ -209,7 +209,7 @@ func TestScan(t *testing.T) {
 
 			mocks = []*mok.Mock{op.Mock}
 		)
-		asserterror.EqualError(err, nil, t)
+		asserterror.EqualError(t, err, nil)
 		if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 			t.Error(infomap)
 		}
@@ -233,8 +233,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops = tops
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessType(func(tp scanner.Type[typename.CompleteName],
 				tops *typeops.Options) (err error) {
@@ -246,8 +246,8 @@ func TestScan(t *testing.T) {
 					}
 					wantTops = tops
 				)
-				asserterror.EqualDeep(tp, wantType, t)
-				asserterror.Equal(tops, wantTops, t)
+				asserterror.EqualDeep(t, tp, wantType)
+				asserterror.Equal(t, tops, wantTops)
 				return
 			})
 			tp  = reflect.TypeFor[[3]int]()
@@ -255,7 +255,7 @@ func TestScan(t *testing.T) {
 
 			mocks = []*mok.Mock{op.Mock}
 		)
-		asserterror.EqualError(err, nil, t)
+		asserterror.EqualError(t, err, nil)
 		if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 			t.Error(infomap)
 		}
@@ -276,8 +276,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops = tops
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessType(func(tp scanner.Type[typename.CompleteName],
 				tops *typeops.Options) (err error) {
@@ -290,8 +290,8 @@ func TestScan(t *testing.T) {
 					}
 					wantTops = tops
 				)
-				asserterror.EqualDeep(tp, wantType, t)
-				asserterror.Equal(tops, wantTops, t)
+				asserterror.EqualDeep(t, tp, wantType)
+				asserterror.Equal(t, tops, wantTops)
 				return
 			})
 
@@ -300,7 +300,7 @@ func TestScan(t *testing.T) {
 
 			mocks = []*mok.Mock{op.Mock}
 		)
-		asserterror.EqualError(err, nil, t)
+		asserterror.EqualError(t, err, nil)
 		if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 			t.Error(infomap)
 		}
@@ -323,8 +323,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops = tops
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessType(
 				func(tp scanner.Type[typename.CompleteName], tops *typeops.Options) (err error) {
@@ -336,8 +336,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops = elemTops
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				})
 			tp  = reflect.TypeFor[[]int]()
@@ -345,7 +345,7 @@ func TestScan(t *testing.T) {
 
 			mocks = []*mok.Mock{op.Mock}
 		)
-		asserterror.EqualError(err, nil, t)
+		asserterror.EqualError(t, err, nil)
 		if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 			t.Error(infomap)
 		}
@@ -369,8 +369,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops = tops
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessType(
 				func(tp scanner.Type[typename.CompleteName], tops *typeops.Options) (err error) {
@@ -383,8 +383,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops = elemTops
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				})
 			tp  = reflect.TypeFor[*[]*int]()
@@ -392,7 +392,7 @@ func TestScan(t *testing.T) {
 
 			mocks = []*mok.Mock{op.Mock}
 		)
-		asserterror.EqualError(err, nil, t)
+		asserterror.EqualError(t, err, nil)
 		if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 			t.Error(infomap)
 		}
@@ -418,8 +418,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops = tops
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessLeftSquare(func() {
 				// nothing to do
@@ -433,8 +433,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops = keyTops
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessRightSquare(func() {
 				// nothing to do
@@ -448,8 +448,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops = valueTops
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				})
 
@@ -458,7 +458,7 @@ func TestScan(t *testing.T) {
 
 			mocks = []*mok.Mock{op.Mock}
 		)
-		asserterror.EqualError(err, nil, t)
+		asserterror.EqualError(t, err, nil)
 		if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 			t.Error(infomap)
 		}
@@ -485,8 +485,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops = tops
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessLeftSquare(func() {
 				// nothing to do
@@ -501,8 +501,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops = keyTops
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessRightSquare(func() {
 				// nothing to do
@@ -517,8 +517,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops = valueTops
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				})
 
@@ -527,7 +527,7 @@ func TestScan(t *testing.T) {
 
 			mocks = []*mok.Mock{op.Mock}
 		)
-		asserterror.EqualError(err, nil, t)
+		asserterror.EqualError(t, err, nil)
 		if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 			t.Error(infomap)
 		}
@@ -561,8 +561,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops = mapTops
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessLeftSquare(func() {
 				// nothing to do
@@ -578,8 +578,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops = keyTops
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessRightSquare(func() {
 				// nothing to do
@@ -597,8 +597,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops = valueTops
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessLeftSquare(func() {
 				// nothing to do
@@ -614,8 +614,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops = key2Tops
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessRightSquare(func() {
 				// nothing to do
@@ -631,8 +631,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops = value2Tops
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				})
 			tp  = reflect.TypeFor[map[int]map[uint]string]()
@@ -640,7 +640,7 @@ func TestScan(t *testing.T) {
 
 			mocks = []*mok.Mock{op.Mock}
 		)
-		asserterror.EqualError(err, nil, t)
+		asserterror.EqualError(t, err, nil)
 		if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 			t.Error(infomap)
 		}
@@ -659,8 +659,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops *typeops.Options
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				})
 			tp  = reflect.TypeFor[int]()
@@ -668,7 +668,7 @@ func TestScan(t *testing.T) {
 
 			mocks = []*mok.Mock{op.Mock}
 		)
-		asserterror.EqualError(err, nil, t)
+		asserterror.EqualError(t, err, nil)
 		if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 			t.Error(infomap)
 		}
@@ -687,8 +687,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops *typeops.Options
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				})
 			tp  = reflect.TypeFor[*int]()
@@ -696,7 +696,7 @@ func TestScan(t *testing.T) {
 
 			mocks = []*mok.Mock{op.Mock}
 		)
-		asserterror.EqualError(err, nil, t)
+		asserterror.EqualError(t, err, nil)
 		if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 			t.Error(infomap)
 		}
@@ -709,15 +709,15 @@ func TestScan(t *testing.T) {
 					tops *typeops.Options) (err error) {
 					var (
 						wantType = scanner.Type[typename.CompleteName]{
-							Name:     "map[github.com/mus-format/musgen-go/testdata/generic/testdata.MyArray[int]]int",
-							KeyType:  "github.com/mus-format/musgen-go/testdata/generic/testdata.MyArray[int]",
+							Name:     "map[github.com/mus-format/musgen-go/testutil/generic/testutil.MyArray[int]]int",
+							KeyType:  "github.com/mus-format/musgen-go/testutil/generic/testutil.MyArray[int]",
 							ElemType: "int",
 							Kind:     scanner.Map,
 						}
 						wantTops *typeops.Options
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessLeftSquare(func() {
 				// nothing to do
@@ -725,8 +725,8 @@ func TestScan(t *testing.T) {
 				tops *typeops.Options) (err error) {
 				var (
 					wantType = scanner.Type[typename.CompleteName]{
-						PkgPath:  "github.com/mus-format/musgen-go/testdata/generic",
-						Package:  "testdata",
+						PkgPath:  "github.com/mus-format/musgen-go/testutil/generic",
+						Package:  "testutil",
 						Name:     "MyArray",
 						Params:   []typename.CompleteName{"int"},
 						Kind:     scanner.Defined,
@@ -734,8 +734,8 @@ func TestScan(t *testing.T) {
 					}
 					wantTops *typeops.Options
 				)
-				asserterror.EqualDeep(tp, wantType, t)
-				asserterror.Equal(tops, wantTops, t)
+				asserterror.EqualDeep(t, tp, wantType)
+				asserterror.Equal(t, tops, wantTops)
 				return
 			}).RegisterProcessRightSquare(func() {
 				// nothing to do
@@ -750,8 +750,8 @@ func TestScan(t *testing.T) {
 					}
 					wantTops *typeops.Options
 				)
-				asserterror.EqualDeep(tp, wantType, t)
-				asserterror.Equal(tops, wantTops, t)
+				asserterror.EqualDeep(t, tp, wantType)
+				asserterror.Equal(t, tops, wantTops)
 				return
 			})
 			tp  = reflect.TypeFor[map[generic_testdata.MyArray[int]]int]()
@@ -760,7 +760,7 @@ func TestScan(t *testing.T) {
 
 			mocks = []*mok.Mock{op.Mock}
 		)
-		asserterror.EqualError(err, nil, t)
+		asserterror.EqualError(t, err, nil)
 		if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 			t.Error(infomap)
 		}
@@ -773,19 +773,19 @@ func TestScan(t *testing.T) {
 					tops *typeops.Options) (err error) {
 					var (
 						wantType = scanner.Type[typename.CompleteName]{
-							PkgPath: "github.com/mus-format/musgen-go/testdata/generic",
-							Package: "testdata",
+							PkgPath: "github.com/mus-format/musgen-go/testutil/generic",
+							Package: "testutil",
 							Name:    "MyDoubleParamStruct",
 							Params: []typename.CompleteName{
-								"map[github.com/mus-format/musgen-go/testdata/generic.MyInt][3]math/big.Int",
-								"github.com/mus-format/musgen-go/testdata/generic.MySlice[[]string]",
+								"map[github.com/mus-format/musgen-go/testutil/generic.MyInt][3]math/big.Int",
+								"github.com/mus-format/musgen-go/testutil/generic.MySlice[[]string]",
 							},
 							Kind: scanner.Defined,
 						}
 						wantTops *typeops.Options
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessLeftSquare(func() {
 				// nothing to do
@@ -793,16 +793,16 @@ func TestScan(t *testing.T) {
 				func(tp scanner.Type[typename.CompleteName], tops *typeops.Options) (err error) {
 					var (
 						wantType = scanner.Type[typename.CompleteName]{
-							Name:     "map[github.com/mus-format/musgen-go/testdata/generic.MyInt][3]math/big.Int",
-							KeyType:  "github.com/mus-format/musgen-go/testdata/generic.MyInt",
+							Name:     "map[github.com/mus-format/musgen-go/testutil/generic.MyInt][3]math/big.Int",
+							KeyType:  "github.com/mus-format/musgen-go/testutil/generic.MyInt",
 							ElemType: "[3]math/big.Int",
 							Kind:     scanner.Map,
 							Position: scanner.Param,
 						}
 						wantTops *typeops.Options
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessLeftSquare(func() {
 				// nothing to do
@@ -810,7 +810,7 @@ func TestScan(t *testing.T) {
 				func(tp scanner.Type[typename.CompleteName], tops *typeops.Options) (err error) {
 					var (
 						wantType = scanner.Type[typename.CompleteName]{
-							PkgPath:  "github.com/mus-format/musgen-go/testdata",
+							PkgPath:  "github.com/mus-format/musgen-go/testutil",
 							Package:  "generic",
 							Name:     "MyInt",
 							Kind:     scanner.Defined,
@@ -818,8 +818,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops *typeops.Options
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessRightSquare(func() {
 				// nothing to do
@@ -835,8 +835,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops *typeops.Options
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessType(
 				func(tp scanner.Type[typename.CompleteName], tops *typeops.Options) (err error) {
@@ -850,8 +850,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops *typeops.Options
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessComma(func() {
 				// nothing to do
@@ -859,7 +859,7 @@ func TestScan(t *testing.T) {
 				func(tp scanner.Type[typename.CompleteName], tops *typeops.Options) (err error) {
 					var (
 						wantType = scanner.Type[typename.CompleteName]{
-							PkgPath:  "github.com/mus-format/musgen-go/testdata/generic",
+							PkgPath:  "github.com/mus-format/musgen-go/testutil/generic",
 							Package:  "generic",
 							Name:     "MySlice",
 							Params:   []typename.CompleteName{"[]string"},
@@ -868,8 +868,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops *typeops.Options
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessLeftSquare(func() {
 				// nothing to do
@@ -884,8 +884,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops *typeops.Options
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessType(
 				func(tp scanner.Type[typename.CompleteName], tops *typeops.Options) (err error) {
@@ -897,8 +897,8 @@ func TestScan(t *testing.T) {
 						}
 						wantTops *typeops.Options
 					)
-					asserterror.EqualDeep(tp, wantType, t)
-					asserterror.Equal(tops, wantTops, t)
+					asserterror.EqualDeep(t, tp, wantType)
+					asserterror.Equal(t, tops, wantTops)
 					return
 				}).RegisterProcessRightSquare(func() {
 				// nothing to do
@@ -910,7 +910,7 @@ func TestScan(t *testing.T) {
 
 			mocks = []*mok.Mock{op.Mock}
 		)
-		asserterror.EqualError(err, nil, t)
+		asserterror.EqualError(t, err, nil)
 		if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 			t.Error(infomap)
 		}

@@ -24,7 +24,7 @@ func TestRelName(t *testing.T) {
 		}
 		for _, c := range testCases {
 			str := c.name.WithoutSquares()
-			asserterror.Equal(str, c.wantStr, t)
+			asserterror.Equal(t, str, c.wantStr)
 		}
 	})
 

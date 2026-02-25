@@ -6,8 +6,8 @@ import (
 
 	genops "github.com/mus-format/musgen-go/options/generate"
 	"github.com/mus-format/musgen-go/scanner"
-	generic_testdata "github.com/mus-format/musgen-go/testdata/generic"
-	prim_testdata "github.com/mus-format/musgen-go/testdata/primitive"
+	generic_testdata "github.com/mus-format/musgen-go/testutil/generic"
+	prim_testdata "github.com/mus-format/musgen-go/testutil/primitive"
 	"github.com/mus-format/musgen-go/typename"
 	asserterror "github.com/ymz-ncnk/assert/error"
 )
@@ -19,8 +19,8 @@ func TestConverter(t *testing.T) {
 		t.Run("Should work", func(t *testing.T) {
 			gops := genops.New()
 			genops.Apply([]genops.SetOption{
-				genops.WithImportAlias("github.com/mus-format/musgen-go/testdata/primitive", "primitive"),
-				genops.WithImportAlias("github.com/mus-format/musgen-go/testdata/generic", "generic"),
+				genops.WithImportAlias("github.com/mus-format/musgen-go/testutil/primitive", "primitive"),
+				genops.WithImportAlias("github.com/mus-format/musgen-go/testutil/generic", "generic"),
 			}, &gops)
 
 			testCases := []struct {
@@ -49,8 +49,8 @@ func TestConverter(t *testing.T) {
 			)
 			for _, c := range testCases {
 				fname, err = conv.ConvertToFullName(c.cname)
-				asserterror.EqualError(err, c.wantErr, t)
-				asserterror.Equal(fname, c.wantFullName, t)
+				asserterror.EqualError(t, err, c.wantErr)
+				asserterror.Equal(t, fname, c.wantFullName)
 			}
 		})
 
@@ -63,25 +63,25 @@ func TestConverter(t *testing.T) {
 				wantErr      error             = scanner.NewUnsupportedQualifiedNameError(cname)
 			)
 			fname, err := conv.ConvertToFullName(cname)
-			asserterror.Equal(fname, wantFullName, t)
-			asserterror.EqualError(err, wantErr, t)
+			asserterror.Equal(t, fname, wantFullName)
+			asserterror.EqualError(t, err, wantErr)
 		})
 
 		t.Run("Should fails if cname contains two pkgPath with the same alias",
 			func(t *testing.T) {
 				var (
-					cname typename.CompleteName = "map[github.com/mus-format/musgen-go/testdata/primitive/testdata.MyInt]github.com/mus-format/musgen-go/testdata/container/testdata.MyArray"
+					cname typename.CompleteName = "map[github.com/mus-format/musgen-go/testutil/primitive/testutil.MyInt]github.com/mus-format/musgen-go/testutil/container/testutil.MyArray"
 					conv                        = NewConverter(genops.New())
 
 					wantFullName typename.FullName = ""
 					wantErr      error             = NewTwoPathsSameAliasError(
-						"github.com/mus-format/musgen-go/testdata/primitive",
-						"github.com/mus-format/musgen-go/testdata/container",
-						"testdata")
+						"github.com/mus-format/musgen-go/testutil/primitive",
+						"github.com/mus-format/musgen-go/testutil/container",
+						"testutil")
 				)
 				fname, err := conv.ConvertToFullName(cname)
-				asserterror.Equal(fname, wantFullName, t)
-				asserterror.EqualError(err, wantErr, t)
+				asserterror.Equal(t, fname, wantFullName)
+				asserterror.EqualError(t, err, wantErr)
 			})
 
 	})
@@ -118,8 +118,8 @@ func TestConverter(t *testing.T) {
 			)
 			for _, c := range testCases {
 				rname, err = conv.ConvertToRelName(c.fname)
-				asserterror.EqualError(err, c.wantErr, t)
-				asserterror.Equal(rname, c.wantRelName, t)
+				asserterror.EqualError(t, err, c.wantErr)
+				asserterror.Equal(t, rname, c.wantRelName)
 			}
 		})
 
@@ -132,8 +132,8 @@ func TestConverter(t *testing.T) {
 				wantErr     error            = scanner.NewUnsupportedQualifiedNameError(fname)
 			)
 			rname, err := conv.ConvertToRelName(fname)
-			asserterror.Equal(rname, wantRelName, t)
-			asserterror.EqualError(err, wantErr, t)
+			asserterror.Equal(t, rname, wantRelName)
+			asserterror.EqualError(t, err, wantErr)
 		})
 
 	})

@@ -33,6 +33,6 @@ func TestAnonSerKind(t *testing.T) {
 		},
 	}
 	for _, c := range testCases {
-		asserterror.Equal(c.kind.String(), c.wantStr, t)
+		asserterror.Equal(t, c.kind.String(), c.wantStr)
 	}
 }

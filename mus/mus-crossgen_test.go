@@ -7,8 +7,8 @@ import (
 
 	genops "github.com/mus-format/musgen-go/options/generate"
 	introps "github.com/mus-format/musgen-go/options/interface"
-	testdata "github.com/mus-format/musgen-go/testdata/crossgen"
-	pkg "github.com/mus-format/musgen-go/testdata/crossgen/pkg"
+	testutil "github.com/mus-format/musgen-go/testutil/crossgen"
+	pkg "github.com/mus-format/musgen-go/testutil/crossgen/pkg"
 	assertfatal "github.com/ymz-ncnk/assert/fatal"
 )
 
@@ -16,14 +16,14 @@ func TestCrossGeneration(t *testing.T) {
 
 	t.Run("pkg", func(t *testing.T) {
 		g, err := NewCodeGenerator(
-			genops.WithPkgPath("github.com/mus-format/musgen-go/testdata/crossgen/pkg"),
+			genops.WithPkgPath("github.com/mus-format/musgen-go/testutil/crossgen/pkg"),
 		)
-		assertfatal.EqualError(err, nil, t)
+		assertfatal.EqualError(t, err, nil)
 
 		// defined type
 
 		err = g.AddDefinedType(reflect.TypeFor[pkg.MyInt]())
-		assertfatal.EqualError(err, nil, t)
+		assertfatal.EqualError(t, err, nil)
 
 		// generate
 
@@ -31,55 +31,55 @@ func TestCrossGeneration(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		err = os.WriteFile("../testdata/crossgen/pkg/mus-format.gen.go", bs, 0644)
-		assertfatal.EqualError(err, nil, t)
+		err = os.WriteFile("../testutil/crossgen/pkg/mus-format.gen.go", bs, 0644)
+		assertfatal.EqualError(t, err, nil)
 	})
 
 	g, err := NewCodeGenerator(
-		genops.WithPkgPath("github.com/mus-format/musgen-go/testdata/crossgen"),
-		genops.WithPackage("testdata"),
-		genops.WithImport("github.com/mus-format/musgen-go/testdata/crossgen/pkg"),
+		genops.WithPkgPath("github.com/mus-format/musgen-go/testutil/crossgen"),
+		genops.WithPackage("testutil"),
+		genops.WithImport("github.com/mus-format/musgen-go/testutil/crossgen/pkg"),
 	)
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
 	// defined type
 
 	// err = g.AddDefinedType(reflect.TypeFor[pkg.MyInt]())
-	// assertfatal.EqualError(err, nil, t)
+	// assertfatal.EqualError(t, err, nil)
 
 	err = g.AddDefinedType(reflect.TypeFor[pkg.MySlice]())
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
 	// struct
 
 	tp := reflect.TypeFor[pkg.MyStruct]()
 	err = g.AddStruct(tp)
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
 	// defined type
 
-	err = g.AddDefinedType(reflect.TypeFor[testdata.MyMap]())
-	assertfatal.EqualError(err, nil, t)
+	err = g.AddDefinedType(reflect.TypeFor[testutil.MyMap]())
+	assertfatal.EqualError(t, err, nil)
 
-	err = g.AddDefinedType(reflect.TypeFor[pkg.MyArray[testdata.MyMap]]())
-	assertfatal.EqualError(err, nil, t)
+	err = g.AddDefinedType(reflect.TypeFor[pkg.MyArray[testutil.MyMap]]())
+	assertfatal.EqualError(t, err, nil)
 
 	err = g.AddDefinedType(reflect.TypeFor[pkg.MyAnotherArray[pkg.MyInt]]())
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
 	// struct
-	err = g.AddStruct(reflect.TypeFor[testdata.MyStructWithCrossgen]())
-	assertfatal.EqualError(err, nil, t)
+	err = g.AddStruct(reflect.TypeFor[testutil.MyStructWithCrossgen]())
+	assertfatal.EqualError(t, err, nil)
 
 	// interface
 
 	err = g.AddDTS(tp)
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
 	err = g.AddInterface(reflect.TypeFor[pkg.MyInterface](),
 		introps.WithImpl(tp),
 	)
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
 	// generate
 
@@ -87,6 +87,6 @@ func TestCrossGeneration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = os.WriteFile("../testdata/crossgen/mus-format.gen.go", bs, 0644)
-	assertfatal.EqualError(err, nil, t)
+	err = os.WriteFile("../testutil/crossgen/mus-format.gen.go", bs, 0644)
+	assertfatal.EqualError(t, err, nil)
 }

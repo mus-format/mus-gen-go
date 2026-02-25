@@ -28,7 +28,7 @@ func TestPtrType(t *testing.T) {
 		}
 
 		for _, c := range testCases {
-			asserterror.Equal(c.e.PackageName(), c.wantPackageName, t)
+			asserterror.Equal(t, c.e.PackageName(), c.wantPackageName)
 		}
 	})
 

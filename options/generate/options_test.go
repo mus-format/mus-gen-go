@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	prim_testdata "github.com/mus-format/musgen-go/testdata/primitive"
+	prim_testdata "github.com/mus-format/musgen-go/testutil/primitive"
 	"github.com/mus-format/musgen-go/typename"
 	asserterror "github.com/ymz-ncnk/assert/error"
 )
@@ -31,12 +31,12 @@ func TestOptions(t *testing.T) {
 			WithImport("import1"),
 			WithSerName(reflect.TypeFor[prim_testdata.MyInt](), "MyAwesomeInt"),
 		}, &o)
-		asserterror.Equal(o.PkgPath, typename.PkgPath(wantPkgPath), t)
-		asserterror.Equal(o.Unsafe, wantUnsafe, t)
-		asserterror.Equal(o.NotUnsafe, wantNotUnsafe, t)
-		asserterror.Equal(o.Stream, wantStream, t)
-		asserterror.EqualDeep(o.Imports, wantImports, t)
-		asserterror.EqualDeep(o.SerNames, wantSerNames, t)
+		asserterror.Equal(t, o.PkgPath, typename.PkgPath(wantPkgPath))
+		asserterror.Equal(t, o.Unsafe, wantUnsafe)
+		asserterror.Equal(t, o.NotUnsafe, wantNotUnsafe)
+		asserterror.Equal(t, o.Stream, wantStream)
+		asserterror.EqualDeep(t, o.Imports, wantImports)
+		asserterror.EqualDeep(t, o.SerNames, wantSerNames)
 	})
 
 	t.Run("Hash", func(t *testing.T) {
@@ -58,7 +58,7 @@ func TestOptions(t *testing.T) {
 			WithImport("import1"),
 			WithSerName(reflect.TypeFor[prim_testdata.MyInt](), "MyAwesomeInt"),
 		}, &o2)
-		asserterror.Equal(o1.Hash(), o2.Hash(), t)
+		asserterror.Equal(t, o1.Hash(), o2.Hash())
 	})
 
 	t.Run("WithImport", func(t *testing.T) {
@@ -68,7 +68,7 @@ func TestOptions(t *testing.T) {
 			err := Apply([]SetOption{
 				WithImport(""),
 			}, &o)
-			asserterror.EqualError(err, NewInvalidImportPathError(""), t)
+			asserterror.EqualError(t, err, NewInvalidImportPathError(""))
 		})
 
 	})
@@ -81,7 +81,7 @@ func TestOptions(t *testing.T) {
 				WithImportAlias("github.com/user/project1", "alias"),
 				WithImportAlias("github.com/user/project2", "alias"),
 			}, &o)
-			asserterror.EqualError(err, NewDuplicateImportAlias("alias"), t)
+			asserterror.EqualError(t, err, NewDuplicateImportAlias("alias"))
 		})
 
 		t.Run("Should fail if receives two similar pkgPath", func(t *testing.T) {
@@ -90,8 +90,8 @@ func TestOptions(t *testing.T) {
 				WithImportAlias("github.com/user/project", "alias1"),
 				WithImportAlias("github.com/user/project", "alias2"),
 			}, &o)
-			asserterror.EqualError(err,
-				NewDuplicateImportPath("github.com/user/project"), t)
+			asserterror.EqualError(t, err,
+				NewDuplicateImportPath("github.com/user/project"))
 		})
 
 		t.Run("Should fail if it receives an invalid ImportPath", func(t *testing.T) {
@@ -99,7 +99,7 @@ func TestOptions(t *testing.T) {
 			err := Apply([]SetOption{
 				WithImportAlias("", "alias"),
 			}, &o)
-			asserterror.EqualError(err, NewInvalidImportPathError(""), t)
+			asserterror.EqualError(t, err, NewInvalidImportPathError(""))
 		})
 
 		t.Run("Should fail if it receives an invalid alias", func(t *testing.T) {
@@ -107,7 +107,7 @@ func TestOptions(t *testing.T) {
 			err := Apply([]SetOption{
 				WithImportAlias("github.com/user/project", "123"),
 			}, &o)
-			asserterror.EqualError(err, NewInvalidAliasError("123"), t)
+			asserterror.EqualError(t, err, NewInvalidAliasError("123"))
 		})
 
 	})
@@ -118,8 +118,8 @@ func TestOptions(t *testing.T) {
 			wantMarshalSignatureLastParam = msigLastParam
 		)
 		Apply([]SetOption{}, &o)
-		asserterror.Equal(o.MarshalSignatureLastParam(),
-			wantMarshalSignatureLastParam, t)
+		asserterror.Equal(t, o.MarshalSignatureLastParam(),
+			wantMarshalSignatureLastParam)
 	})
 
 	t.Run("MarshalSignatureLastParam with Stream option", func(t *testing.T) {
@@ -128,8 +128,8 @@ func TestOptions(t *testing.T) {
 			wantMarshalSignatureLastParam = msigLastParamStream
 		)
 		Apply([]SetOption{WithStream()}, &o)
-		asserterror.Equal(o.MarshalSignatureLastParam(),
-			wantMarshalSignatureLastParam, t)
+		asserterror.Equal(t, o.MarshalSignatureLastParam(),
+			wantMarshalSignatureLastParam)
 	})
 
 	t.Run("MarshalLastParam", func(t *testing.T) {
@@ -139,8 +139,8 @@ func TestOptions(t *testing.T) {
 			wantMarshalLastParamFirst = mLastParamFirst
 		)
 		Apply([]SetOption{}, &o)
-		asserterror.Equal(o.MarshalLastParam(false), wantMarshalLastParam, t)
-		asserterror.Equal(o.MarshalLastParam(true), wantMarshalLastParamFirst, t)
+		asserterror.Equal(t, o.MarshalLastParam(false), wantMarshalLastParam)
+		asserterror.Equal(t, o.MarshalLastParam(true), wantMarshalLastParamFirst)
 	})
 
 	t.Run("MarshalLastParam with Stream option", func(t *testing.T) {
@@ -149,8 +149,8 @@ func TestOptions(t *testing.T) {
 			wantMarshalLastParam = mLastParamStream
 		)
 		Apply([]SetOption{WithStream()}, &o)
-		asserterror.Equal(o.MarshalLastParam(false), wantMarshalLastParam, t)
-		asserterror.Equal(o.MarshalLastParam(true), wantMarshalLastParam, t)
+		asserterror.Equal(t, o.MarshalLastParam(false), wantMarshalLastParam)
+		asserterror.Equal(t, o.MarshalLastParam(true), wantMarshalLastParam)
 	})
 
 	t.Run("UnmarshalLastParam", func(t *testing.T) {
@@ -160,8 +160,8 @@ func TestOptions(t *testing.T) {
 			wantUnmarshalLastParamFirst = uLastParamFirst
 		)
 		Apply([]SetOption{}, &o)
-		asserterror.Equal(o.UnmarshalLastParam(false), wantUnmarshalLastParam, t)
-		asserterror.Equal(o.UnmarshalLastParam(true), wantUnmarshalLastParamFirst, t)
+		asserterror.Equal(t, o.UnmarshalLastParam(false), wantUnmarshalLastParam)
+		asserterror.Equal(t, o.UnmarshalLastParam(true), wantUnmarshalLastParamFirst)
 	})
 
 	t.Run("UnmarshalLastParam with Stream option", func(t *testing.T) {
@@ -170,8 +170,8 @@ func TestOptions(t *testing.T) {
 			wantUnmarshalLastParam = uLastParamStream
 		)
 		Apply([]SetOption{WithStream()}, &o)
-		asserterror.Equal(o.UnmarshalLastParam(false), wantUnmarshalLastParam, t)
-		asserterror.Equal(o.UnmarshalLastParam(true), wantUnmarshalLastParam, t)
+		asserterror.Equal(t, o.UnmarshalLastParam(false), wantUnmarshalLastParam)
+		asserterror.Equal(t, o.UnmarshalLastParam(true), wantUnmarshalLastParam)
 	})
 
 	t.Run("SkipLastParam", func(t *testing.T) {
@@ -180,7 +180,7 @@ func TestOptions(t *testing.T) {
 			wantSkipLastParam = skLastParam
 		)
 		Apply([]SetOption{}, &o)
-		asserterror.Equal(o.SkipLastParam(), wantSkipLastParam, t)
+		asserterror.Equal(t, o.SkipLastParam(), wantSkipLastParam)
 	})
 
 	t.Run("SkipLastParam with Stream option", func(t *testing.T) {
@@ -189,7 +189,7 @@ func TestOptions(t *testing.T) {
 			wantSkipLastParam = skLastParamStream
 		)
 		Apply([]SetOption{WithStream()}, &o)
-		asserterror.Equal(o.SkipLastParam(), wantSkipLastParam, t)
+		asserterror.Equal(t, o.SkipLastParam(), wantSkipLastParam)
 	})
 
 	t.Run("ModImportName", func(t *testing.T) {
@@ -198,7 +198,7 @@ func TestOptions(t *testing.T) {
 			wantModImportName = modImportName
 		)
 		Apply([]SetOption{}, &o)
-		asserterror.Equal(o.ModImportName(), wantModImportName, t)
+		asserterror.Equal(t, o.ModImportName(), wantModImportName)
 	})
 
 	t.Run("ModImportName with Stream option", func(t *testing.T) {
@@ -207,7 +207,7 @@ func TestOptions(t *testing.T) {
 			wantModImportName = modImportNameStream
 		)
 		Apply([]SetOption{WithStream()}, &o)
-		asserterror.Equal(o.ModImportName(), wantModImportName, t)
+		asserterror.Equal(t, o.ModImportName(), wantModImportName)
 	})
 
 	t.Run("ExtPackageName", func(t *testing.T) {
@@ -216,7 +216,7 @@ func TestOptions(t *testing.T) {
 			wantExtPackageName = extPackageName
 		)
 		Apply([]SetOption{}, &o)
-		asserterror.Equal(o.ExtPackageName(), wantExtPackageName, t)
+		asserterror.Equal(t, o.ExtPackageName(), wantExtPackageName)
 	})
 
 	t.Run("ExtPackageName with Stream option", func(t *testing.T) {
@@ -225,7 +225,7 @@ func TestOptions(t *testing.T) {
 			wantExtPackageName = extPackageNameStream
 		)
 		Apply([]SetOption{WithStream()}, &o)
-		asserterror.Equal(o.ExtPackageName(), wantExtPackageName, t)
+		asserterror.Equal(t, o.ExtPackageName(), wantExtPackageName)
 	})
 
 	t.Run("Package", func(t *testing.T) {
@@ -234,7 +234,7 @@ func TestOptions(t *testing.T) {
 			wantPackage = "exts"
 		)
 		Apply([]SetOption{WithPackage(wantPackage)}, &o)
-		asserterror.Equal(o.Package, typename.Package(wantPackage), t)
+		asserterror.Equal(t, o.Package, typename.Package(wantPackage))
 	})
 
 }

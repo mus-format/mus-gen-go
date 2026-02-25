@@ -6,38 +6,38 @@ import (
 	"testing"
 
 	genops "github.com/mus-format/musgen-go/options/generate"
-	testdata "github.com/mus-format/musgen-go/testdata/pointer"
+	testutil "github.com/mus-format/musgen-go/testutil/pointer"
 	"github.com/mus-format/musgen-go/typename"
 	assertfatal "github.com/ymz-ncnk/assert/fatal"
 )
 
 func TestPointerGeneration(t *testing.T) {
 	g, err := NewCodeGenerator(
-		genops.WithPkgPath("github.com/mus-format/musgen-go/testdata/pointer"),
-		genops.WithPackage("testdata"),
+		genops.WithPkgPath("github.com/mus-format/musgen-go/testutil/pointer"),
+		genops.WithPackage("testutil"),
 	)
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
-	err = g.AddDefinedType(reflect.TypeFor[testdata.MyIntPtr]())
-	assertfatal.EqualError(err, nil, t)
+	err = g.AddDefinedType(reflect.TypeFor[testutil.MyIntPtr]())
+	assertfatal.EqualError(t, err, nil)
 
-	tp := reflect.TypeFor[testdata.MyDoubleIntPtr]()
+	tp := reflect.TypeFor[testutil.MyDoubleIntPtr]()
 	err = g.AddDefinedType(tp)
-	assertfatal.EqualError(err, typename.NewMultiPointerError(tp), t)
+	assertfatal.EqualError(t, err, typename.NewMultiPointerError(tp))
 
-	err = g.AddDefinedType(reflect.TypeFor[testdata.MySlicePtr]())
-	assertfatal.EqualError(err, nil, t)
+	err = g.AddDefinedType(reflect.TypeFor[testutil.MySlicePtr]())
+	assertfatal.EqualError(t, err, nil)
 
-	err = g.AddStruct(reflect.TypeFor[testdata.MyStruct]())
-	assertfatal.EqualError(err, nil, t)
+	err = g.AddStruct(reflect.TypeFor[testutil.MyStruct]())
+	assertfatal.EqualError(t, err, nil)
 
-	err = g.AddDefinedType(reflect.TypeFor[testdata.MyStructPtr]())
-	assertfatal.EqualError(err, nil, t)
+	err = g.AddDefinedType(reflect.TypeFor[testutil.MyStructPtr]())
+	assertfatal.EqualError(t, err, nil)
 
 	// generate
 
 	bs, err := g.Generate()
-	assertfatal.EqualError(err, nil, t)
-	err = os.WriteFile("../testdata/pointer/mus-format.gen.go", bs, 0644)
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
+	err = os.WriteFile("../testutil/pointer/mus-format.gen.go", bs, 0644)
+	assertfatal.EqualError(t, err, nil)
 }

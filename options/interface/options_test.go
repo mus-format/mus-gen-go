@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	prim_testdata "github.com/mus-format/musgen-go/testdata/primitive"
+	prim_testdata "github.com/mus-format/musgen-go/testutil/primitive"
 	asserterror "github.com/ymz-ncnk/assert/error"
 )
 
@@ -20,6 +20,6 @@ func TestOptions(t *testing.T) {
 		WithImpl(reflect.TypeFor[prim_testdata.MyInt]()),
 		WithMarshaller(),
 	}, &o)
-	asserterror.EqualDeep(o.Impls, wantImpls, t)
-	asserterror.Equal(o.Marshaller, wantMarshaller, t)
+	asserterror.EqualDeep(t, o.Impls, wantImpls)
+	asserterror.Equal(t, o.Marshaller, wantMarshaller)
 }

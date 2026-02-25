@@ -23,7 +23,7 @@ func TestStrToPkg(t *testing.T) {
 	}
 	for _, c := range testCases {
 		pkg, err := StrToPackage(c.str)
-		asserterror.EqualError(err, c.wantErr, t)
-		asserterror.Equal(pkg, c.wantPkg, t)
+		asserterror.EqualError(t, err, c.wantErr)
+		asserterror.Equal(t, pkg, c.wantPkg)
 	}
 }

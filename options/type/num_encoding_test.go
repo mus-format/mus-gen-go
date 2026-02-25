@@ -28,7 +28,7 @@ func TestNumEncoding(t *testing.T) {
 		}
 
 		for _, c := range testCases {
-			asserterror.Equal(c.e.Package(), c.wantPkg, t)
+			asserterror.Equal(t, c.e.Package(), c.wantPkg)
 		}
 	})
 
@@ -56,7 +56,7 @@ func TestNumEncoding(t *testing.T) {
 		}
 
 		for _, c := range testCases {
-			asserterror.Equal(c.e.LenSer(), c.wantLenSer, t)
+			asserterror.Equal(t, c.e.LenSer(), c.wantLenSer)
 		}
 	})
 

@@ -20,7 +20,7 @@ func TestFullName(t *testing.T) {
 			{name: "", wantPkg: ""},
 		}
 		for _, c := range testCases {
-			asserterror.Equal(c.name.Package(), c.wantPkg, t)
+			asserterror.Equal(t, c.name.Package(), c.wantPkg)
 		}
 	})
 
@@ -36,7 +36,7 @@ func TestFullName(t *testing.T) {
 			{name: "", wantTypeName: ""},
 		}
 		for _, c := range testCases {
-			asserterror.Equal(c.name.TypeName(), c.wantTypeName, t)
+			asserterror.Equal(t, c.name.TypeName(), c.wantTypeName)
 		}
 	})
 

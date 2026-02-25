@@ -47,7 +47,7 @@ func TestTimeUnit(t *testing.T) {
 			},
 		}
 		for _, c := range testCases {
-			asserterror.Equal(c.u.Ser(), c.wantSer, t)
+			asserterror.Equal(t, c.u.Ser(), c.wantSer)
 		}
 	})
 

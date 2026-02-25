@@ -7,81 +7,81 @@ import (
 
 	genops "github.com/mus-format/musgen-go/options/generate"
 	typeops "github.com/mus-format/musgen-go/options/type"
-	testdata "github.com/mus-format/musgen-go/testdata/primitive"
+	testutil "github.com/mus-format/musgen-go/testutil/primitive"
 	assertfatal "github.com/ymz-ncnk/assert/fatal"
 )
 
 func TestPrimitiveTypesGeneration(t *testing.T) {
 	g, err := NewCodeGenerator(
-		genops.WithPkgPath("github.com/mus-format/musgen-go/testdata/primitive"),
-		genops.WithPackage("testdata"),
-		genops.WithImport("github.com/mus-format/musgen-go/testdata"),
+		genops.WithPkgPath("github.com/mus-format/musgen-go/testutil/primitive"),
+		genops.WithPackage("testutil"),
+		genops.WithImport("github.com/mus-format/musgen-go/testutil"),
 	)
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
 
 	// bool
 
-	err = g.AddDefinedType(reflect.TypeFor[testdata.MyBool]())
-	assertfatal.EqualError(err, nil, t)
+	err = g.AddDefinedType(reflect.TypeFor[testutil.MyBool]())
+	assertfatal.EqualError(t, err, nil)
 
 	// byte
 
-	err = g.AddDefinedType(reflect.TypeFor[testdata.MyByte]())
-	assertfatal.EqualError(err, nil, t)
+	err = g.AddDefinedType(reflect.TypeFor[testutil.MyByte]())
+	assertfatal.EqualError(t, err, nil)
 
 	// float32
 
-	err = g.AddDefinedType(reflect.TypeFor[testdata.MyFloat32]())
-	assertfatal.EqualError(err, nil, t)
+	err = g.AddDefinedType(reflect.TypeFor[testutil.MyFloat32]())
+	assertfatal.EqualError(t, err, nil)
 
 	// float64
 
-	err = g.AddDefinedType(reflect.TypeFor[testdata.MyFloat64]())
-	assertfatal.EqualError(err, nil, t)
+	err = g.AddDefinedType(reflect.TypeFor[testutil.MyFloat64]())
+	assertfatal.EqualError(t, err, nil)
 
 	// int
 
-	err = g.AddDefinedType(reflect.TypeFor[testdata.MyInt]())
-	assertfatal.EqualError(err, nil, t)
-	err = g.AddDefinedType(reflect.TypeFor[testdata.RawMyInt](),
+	err = g.AddDefinedType(reflect.TypeFor[testutil.MyInt]())
+	assertfatal.EqualError(t, err, nil)
+	err = g.AddDefinedType(reflect.TypeFor[testutil.RawMyInt](),
 		typeops.WithNumEncoding(typeops.Raw),
 	)
-	assertfatal.EqualError(err, nil, t)
-	err = g.AddDefinedType(reflect.TypeFor[testdata.VarintPositiveMyInt](),
+	assertfatal.EqualError(t, err, nil)
+	err = g.AddDefinedType(reflect.TypeFor[testutil.VarintPositiveMyInt](),
 		typeops.WithNumEncoding(typeops.VarintPositive),
 	)
-	assertfatal.EqualError(err, nil, t)
-	err = g.AddDefinedType(reflect.TypeFor[testdata.ValidMyInt](),
-		typeops.WithValidator("testdata.ValidateZeroValue"))
-	assertfatal.EqualError(err, nil, t)
-	err = g.AddDefinedType(reflect.TypeFor[testdata.AllMyInt](),
+	assertfatal.EqualError(t, err, nil)
+	err = g.AddDefinedType(reflect.TypeFor[testutil.ValidMyInt](),
+		typeops.WithValidator("testutil.ValidateZeroValue"))
+	assertfatal.EqualError(t, err, nil)
+	err = g.AddDefinedType(reflect.TypeFor[testutil.AllMyInt](),
 		typeops.WithNumEncoding(typeops.Raw),
-		typeops.WithValidator("testdata.ValidateZeroValue"))
-	assertfatal.EqualError(err, nil, t)
+		typeops.WithValidator("testutil.ValidateZeroValue"))
+	assertfatal.EqualError(t, err, nil)
 
 	// string
 
-	err = g.AddDefinedType(reflect.TypeFor[testdata.MyString]())
-	assertfatal.EqualError(err, nil, t)
-	err = g.AddDefinedType(reflect.TypeFor[testdata.LenEncodingMyString](),
+	err = g.AddDefinedType(reflect.TypeFor[testutil.MyString]())
+	assertfatal.EqualError(t, err, nil)
+	err = g.AddDefinedType(reflect.TypeFor[testutil.LenEncodingMyString](),
 		typeops.WithLenEncoding(typeops.Raw))
-	assertfatal.EqualError(err, nil, t)
-	err = g.AddDefinedType(reflect.TypeFor[testdata.LenValidMyString](),
-		typeops.WithLenValidator("testdata.ValidateLength3"))
-	assertfatal.EqualError(err, nil, t)
-	err = g.AddDefinedType(reflect.TypeFor[testdata.ValidMyString](),
-		typeops.WithValidator("testdata.ValidateZeroValue"))
-	assertfatal.EqualError(err, nil, t)
-	err = g.AddDefinedType(reflect.TypeFor[testdata.AllMyString](),
+	assertfatal.EqualError(t, err, nil)
+	err = g.AddDefinedType(reflect.TypeFor[testutil.LenValidMyString](),
+		typeops.WithLenValidator("testutil.ValidateLength3"))
+	assertfatal.EqualError(t, err, nil)
+	err = g.AddDefinedType(reflect.TypeFor[testutil.ValidMyString](),
+		typeops.WithValidator("testutil.ValidateZeroValue"))
+	assertfatal.EqualError(t, err, nil)
+	err = g.AddDefinedType(reflect.TypeFor[testutil.AllMyString](),
 		typeops.WithLenEncoding(typeops.Raw),
-		typeops.WithLenValidator("testdata.ValidateLength3"),
-		typeops.WithValidator("testdata.ValidateZeroValue"))
-	assertfatal.EqualError(err, nil, t)
+		typeops.WithLenValidator("testutil.ValidateLength3"),
+		typeops.WithValidator("testutil.ValidateZeroValue"))
+	assertfatal.EqualError(t, err, nil)
 
 	// generate
 
 	bs, err := g.Generate()
-	assertfatal.EqualError(err, nil, t)
-	err = os.WriteFile("../testdata/primitive/mus-format.gen.go", bs, 0644)
-	assertfatal.EqualError(err, nil, t)
+	assertfatal.EqualError(t, err, nil)
+	err = os.WriteFile("../testutil/primitive/mus-format.gen.go", bs, 0644)
+	assertfatal.EqualError(t, err, nil)
 }

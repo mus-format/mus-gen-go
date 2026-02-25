@@ -30,15 +30,15 @@ func TestOptions(t *testing.T) {
 		WithKey(WithIgnore()),
 		WithElem(WithIgnore()),
 	}, &o)
-	asserterror.EqualDeep(o.Ignore, wantIgnore, t)
-	asserterror.Equal(o.NumEncoding, wantNumEncoding, t)
-	asserterror.Equal(o.SourceType, wantSourceType, t)
-	asserterror.Equal(o.TimeUnit, wantTimeUint, t)
-	asserterror.Equal(o.Validator, wantValidator, t)
-	asserterror.Equal(o.LenEncoding, wantLenEncoding, t)
-	asserterror.Equal(o.LenValidator, wantLenValidator, t)
-	asserterror.Equal(*o.Key, *wantKey, t)
-	asserterror.Equal(*o.Elem, *wantElem, t)
+	asserterror.EqualDeep(t, o.Ignore, wantIgnore)
+	asserterror.Equal(t, o.NumEncoding, wantNumEncoding)
+	asserterror.Equal(t, o.SourceType, wantSourceType)
+	asserterror.Equal(t, o.TimeUnit, wantTimeUint)
+	asserterror.Equal(t, o.Validator, wantValidator)
+	asserterror.Equal(t, o.LenEncoding, wantLenEncoding)
+	asserterror.Equal(t, o.LenValidator, wantLenValidator)
+	asserterror.Equal(t, *o.Key, *wantKey)
+	asserterror.Equal(t, *o.Elem, *wantElem)
 
 	t.Run("Hash", func(t *testing.T) {
 		o1 := Options{}
@@ -65,6 +65,6 @@ func TestOptions(t *testing.T) {
 			WithKey(WithIgnore()),
 			WithElem(WithIgnore()),
 		}, &o2)
-		asserterror.Equal(o1.Hash(), o2.Hash(), t)
+		asserterror.Equal(t, o1.Hash(), o2.Hash())
 	})
 }

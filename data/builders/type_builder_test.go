@@ -6,16 +6,16 @@ import (
 	"testing"
 
 	"github.com/mus-format/musgen-go/data"
-	"github.com/mus-format/musgen-go/data/builders/testdata/mock"
+	"github.com/mus-format/musgen-go/data/builders/testutil/mock"
 	genops "github.com/mus-format/musgen-go/options/generate"
 	introps "github.com/mus-format/musgen-go/options/interface"
 	structops "github.com/mus-format/musgen-go/options/struct"
 	typeops "github.com/mus-format/musgen-go/options/type"
-	container_testdata "github.com/mus-format/musgen-go/testdata/container"
-	intr_testdata "github.com/mus-format/musgen-go/testdata/interface"
-	prim_testdata "github.com/mus-format/musgen-go/testdata/primitive"
-	struct_testdata "github.com/mus-format/musgen-go/testdata/struct"
-	time_testdata "github.com/mus-format/musgen-go/testdata/time"
+	container_testdata "github.com/mus-format/musgen-go/testutil/container"
+	intr_testdata "github.com/mus-format/musgen-go/testutil/interface"
+	prim_testdata "github.com/mus-format/musgen-go/testutil/primitive"
+	struct_testdata "github.com/mus-format/musgen-go/testutil/struct"
+	time_testdata "github.com/mus-format/musgen-go/testutil/time"
 	"github.com/mus-format/musgen-go/typename"
 	asserterror "github.com/ymz-ncnk/assert/error"
 	"github.com/ymz-ncnk/mok"
@@ -34,8 +34,8 @@ func TestTypeDataBuilder(t *testing.T) {
 			t.Helper()
 			b := NewTypeDataBuilder(conv, gops)
 			d, err := b.BuildDefinedTypeData(tp, tops)
-			asserterror.EqualError(err, wantErr, t)
-			asserterror.EqualDeep(d, wantTypeData, t)
+			asserterror.EqualError(t, err, wantErr)
+			asserterror.EqualDeep(t, d, wantTypeData)
 
 			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 				t.Error(infomap)
@@ -47,7 +47,7 @@ func TestTypeDataBuilder(t *testing.T) {
 				tp           = reflect.TypeFor[prim_testdata.MyInt]()
 				gops         = genops.New()
 				wantTypeData = data.TypeData{
-					FullName:       "testdata.MyInt",
+					FullName:       "testutil.MyInt",
 					SourceFullName: "int",
 
 					Fields: []data.FieldData{
@@ -58,11 +58,11 @@ func TestTypeDataBuilder(t *testing.T) {
 				wantErr error = nil
 				conv          = mock.NewTypeNameConvertor().RegisterConvertToFullName(
 					func(cname typename.CompleteName) (fname typename.FullName, err error) {
-						asserterror.Equal(cname, "github.com/mus-format/musgen-go/testdata/primitive/testdata.MyInt", t)
+						asserterror.Equal(t, cname, "github.com/mus-format/musgen-go/testutil/primitive/testutil.MyInt")
 						return wantTypeData.FullName, nil
 					}).RegisterConvertToFullName(
 					func(cname typename.CompleteName) (fname typename.FullName, err error) {
-						asserterror.Equal(cname, "int", t)
+						asserterror.Equal(t, cname, "int")
 						return "int", nil
 					})
 				mocks = []*mok.Mock{conv.Mock}
@@ -76,7 +76,7 @@ func TestTypeDataBuilder(t *testing.T) {
 				tp           = reflect.TypeFor[container_testdata.MySlice]()
 				gops         = genops.New()
 				wantTypeData = data.TypeData{
-					FullName:       "testdata.MySlice",
+					FullName:       "testutil.MySlice",
 					SourceFullName: "int",
 
 					Fields: []data.FieldData{
@@ -87,11 +87,11 @@ func TestTypeDataBuilder(t *testing.T) {
 				wantErr error = nil
 				conv          = mock.NewTypeNameConvertor().RegisterConvertToFullName(
 					func(cname typename.CompleteName) (fname typename.FullName, err error) {
-						asserterror.Equal(cname, "github.com/mus-format/musgen-go/testdata/container/testdata.MySlice", t)
+						asserterror.Equal(t, cname, "github.com/mus-format/musgen-go/testutil/container/testutil.MySlice")
 						return wantTypeData.FullName, nil
 					}).RegisterConvertToFullName(
 					func(cname typename.CompleteName) (fname typename.FullName, err error) {
-						asserterror.Equal(cname, "[]int", t)
+						asserterror.Equal(t, cname, "[]int")
 						return "int", nil
 					})
 				mocks = []*mok.Mock{conv.Mock}
@@ -128,7 +128,7 @@ func TestTypeDataBuilder(t *testing.T) {
 
 					conv = mock.NewTypeNameConvertor().RegisterConvertToFullName(
 						func(cname typename.CompleteName) (fname typename.FullName, err error) {
-							return "testdata.MyInt", nil
+							return "testutil.MyInt", nil
 						}).RegisterConvertToFullName(
 						func(cname typename.CompleteName) (fname typename.FullName, err error) {
 							err = wantErr
@@ -164,8 +164,8 @@ func TestTypeDataBuilder(t *testing.T) {
 			t.Helper()
 			b := NewTypeDataBuilder(conv, gops)
 			d, err := b.BuildStructData(tp, sops)
-			asserterror.EqualError(err, wantErr, t)
-			asserterror.EqualDeep(d, wantTypeData, t)
+			asserterror.EqualError(t, err, wantErr)
+			asserterror.EqualDeep(t, d, wantTypeData)
 
 			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 				t.Error(infomap)
@@ -178,7 +178,7 @@ func TestTypeDataBuilder(t *testing.T) {
 				sops         = structops.New()
 				gops         = genops.New()
 				wantTypeData = data.TypeData{
-					FullName: "testdata.MyStruct",
+					FullName: "testutil.MyStruct",
 
 					Fields: []data.FieldData{
 						{FullName: "int", FieldName: "Int"},
@@ -190,15 +190,15 @@ func TestTypeDataBuilder(t *testing.T) {
 				wantErr error = nil
 				conv          = mock.NewTypeNameConvertor().RegisterConvertToFullName(
 					func(cname typename.CompleteName) (fname typename.FullName, err error) {
-						asserterror.Equal(cname, "github.com/mus-format/musgen-go/testdata/struct/testdata.MyStruct", t)
+						asserterror.Equal(t, cname, "github.com/mus-format/musgen-go/testutil/struct/testutil.MyStruct")
 						return wantTypeData.FullName, nil
 					}).RegisterConvertToFullName(
 					func(cname typename.CompleteName) (fname typename.FullName, err error) {
-						asserterror.Equal(cname, "int", t)
+						asserterror.Equal(t, cname, "int")
 						return wantTypeData.Fields[0].FullName, nil
 					}).RegisterConvertToFullName(
 					func(cname typename.CompleteName) (fname typename.FullName, err error) {
-						asserterror.Equal(cname, "string", t)
+						asserterror.Equal(t, cname, "string")
 						return wantTypeData.Fields[1].FullName, nil
 					})
 				mocks = []*mok.Mock{conv.Mock}
@@ -236,7 +236,7 @@ func TestTypeDataBuilder(t *testing.T) {
 
 					conv = mock.NewTypeNameConvertor().RegisterConvertToFullName(
 						func(cname typename.CompleteName) (fname typename.FullName, err error) {
-							return "testdata.MyStruct", nil
+							return "testutil.MyStruct", nil
 						}).RegisterConvertToFullName(
 						func(cname typename.CompleteName) (fname typename.FullName, err error) {
 							err = wantErr
@@ -299,8 +299,8 @@ func TestTypeDataBuilder(t *testing.T) {
 			t.Helper()
 			b := NewTypeDataBuilder(conv, gops)
 			d, err := b.BuildInterfaceData(tp, iops)
-			asserterror.EqualError(err, wantErr, t)
-			asserterror.EqualDeep(d, wantTypeData, t)
+			asserterror.EqualError(t, err, wantErr)
+			asserterror.EqualDeep(t, d, wantTypeData)
 
 			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 				t.Error(infomap)
@@ -320,8 +320,8 @@ func TestTypeDataBuilder(t *testing.T) {
 
 			var (
 				wantTypeData = data.TypeData{
-					FullName: "testdata.MyInterface",
-					Impls:    []typename.FullName{"testdata.Impl1", "testdata.Impl2"},
+					FullName: "testutil.MyInterface",
+					Impls:    []typename.FullName{"testutil.Impl1", "testutil.Impl2"},
 					Iops:     iops,
 					Gops:     gops,
 				}
@@ -329,15 +329,15 @@ func TestTypeDataBuilder(t *testing.T) {
 
 				conv = mock.NewTypeNameConvertor().RegisterConvertToFullName(
 					func(cname typename.CompleteName) (fname typename.FullName, err error) {
-						asserterror.Equal(cname, "github.com/mus-format/musgen-go/testdata/interface/testdata.MyInterface", t)
+						asserterror.Equal(t, cname, "github.com/mus-format/musgen-go/testutil/interface/testutil.MyInterface")
 						return wantTypeData.FullName, nil
 					}).RegisterConvertToFullName(
 					func(cname typename.CompleteName) (fname typename.FullName, err error) {
-						asserterror.Equal(cname, "github.com/mus-format/musgen-go/testdata/interface/testdata.Impl1", t)
+						asserterror.Equal(t, cname, "github.com/mus-format/musgen-go/testutil/interface/testutil.Impl1")
 						return wantTypeData.Impls[0], nil
 					}).RegisterConvertToFullName(
 					func(cname typename.CompleteName) (fname typename.FullName, err error) {
-						asserterror.Equal(cname, "github.com/mus-format/musgen-go/testdata/interface/testdata.Impl2", t)
+						asserterror.Equal(t, cname, "github.com/mus-format/musgen-go/testutil/interface/testutil.Impl2")
 						return wantTypeData.Impls[1], nil
 					})
 				mocks = []*mok.Mock{conv.Mock}
@@ -359,8 +359,8 @@ func TestTypeDataBuilder(t *testing.T) {
 
 			var (
 				wantTypeData = data.TypeData{
-					FullName: "testdata.MyAnyInterface",
-					Impls:    []typename.FullName{"testdata.Impl1", "testdata.Impl2"},
+					FullName: "testutil.MyAnyInterface",
+					Impls:    []typename.FullName{"testutil.Impl1", "testutil.Impl2"},
 					Iops:     iops,
 					Gops:     gops,
 				}
@@ -368,15 +368,15 @@ func TestTypeDataBuilder(t *testing.T) {
 
 				conv = mock.NewTypeNameConvertor().RegisterConvertToFullName(
 					func(cname typename.CompleteName) (fname typename.FullName, err error) {
-						asserterror.Equal(cname, "github.com/mus-format/musgen-go/testdata/interface/testdata.MyAnyInterface", t)
+						asserterror.Equal(t, cname, "github.com/mus-format/musgen-go/testutil/interface/testutil.MyAnyInterface")
 						return wantTypeData.FullName, nil
 					}).RegisterConvertToFullName(
 					func(cname typename.CompleteName) (fname typename.FullName, err error) {
-						asserterror.Equal(cname, "github.com/mus-format/musgen-go/testdata/interface/testdata.Impl1", t)
+						asserterror.Equal(t, cname, "github.com/mus-format/musgen-go/testutil/interface/testutil.Impl1")
 						return wantTypeData.Impls[0], nil
 					}).RegisterConvertToFullName(
 					func(cname typename.CompleteName) (fname typename.FullName, err error) {
-						asserterror.Equal(cname, "github.com/mus-format/musgen-go/testdata/interface/testdata.Impl2", t)
+						asserterror.Equal(t, cname, "github.com/mus-format/musgen-go/testutil/interface/testutil.Impl2")
 						return wantTypeData.Impls[1], nil
 					})
 				mocks = []*mok.Mock{conv.Mock}
@@ -427,7 +427,7 @@ func TestTypeDataBuilder(t *testing.T) {
 					wantErr      = errors.New("Converter.ConvertToFullName error")
 					conv         = mock.NewTypeNameConvertor().RegisterConvertToFullName(
 						func(cname typename.CompleteName) (fname typename.FullName, err error) {
-							fname = "testdata.MyInterface"
+							fname = "testutil.MyInterface"
 							return
 						}).RegisterConvertToFullName(
 						func(cname typename.CompleteName) (fname typename.FullName, err error) {
@@ -471,14 +471,14 @@ func TestTypeDataBuilder(t *testing.T) {
 			var (
 				gops         = genops.New()
 				wantTypeData = data.TypeData{
-					FullName: "testdata.MyInt",
+					FullName: "testutil.MyInt",
 					Gops:     gops,
 				}
 				wantErr error = nil
 
 				conv = mock.NewTypeNameConvertor().RegisterConvertToFullName(
 					func(cname typename.CompleteName) (fname typename.FullName, err error) {
-						asserterror.Equal(cname, "github.com/mus-format/musgen-go/testdata/primitive/testdata.MyInt", t)
+						asserterror.Equal(t, cname, "github.com/mus-format/musgen-go/testutil/primitive/testutil.MyInt")
 						return wantTypeData.FullName, nil
 					})
 
@@ -487,8 +487,8 @@ func TestTypeDataBuilder(t *testing.T) {
 				mocks = []*mok.Mock{conv.Mock}
 			)
 			d, err := b.BuildDTSData(reflect.TypeFor[prim_testdata.MyInt]())
-			asserterror.EqualError(err, wantErr, t)
-			asserterror.EqualDeep(d, wantTypeData, t)
+			asserterror.EqualError(t, err, wantErr)
+			asserterror.EqualDeep(t, d, wantTypeData)
 
 			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 				t.Error(infomap)
@@ -504,8 +504,8 @@ func TestTypeDataBuilder(t *testing.T) {
 				b            = NewTypeDataBuilder(nil, gops)
 			)
 			d, err := b.BuildDTSData(tp)
-			asserterror.EqualError(err, wantErr, t)
-			asserterror.EqualDeep(d, wantTypeData, t)
+			asserterror.EqualError(t, err, wantErr)
+			asserterror.EqualDeep(t, d, wantTypeData)
 		})
 	})
 
@@ -513,7 +513,7 @@ func TestTypeDataBuilder(t *testing.T) {
 		var (
 			gops         = genops.New()
 			wantTypeData = data.TypeData{
-				FullName:       "testdata.MyTime",
+				FullName:       "testutil.MyTime",
 				SourceFullName: "time.Time",
 				Fields: []data.FieldData{
 					{FullName: "time.Time"},
@@ -524,7 +524,7 @@ func TestTypeDataBuilder(t *testing.T) {
 
 			conv = mock.NewTypeNameConvertor().RegisterConvertToFullName(
 				func(cname typename.CompleteName) (fname typename.FullName, err error) {
-					asserterror.Equal(cname, "github.com/mus-format/musgen-go/testdata/time/testdata.MyTime", t)
+					asserterror.Equal(t, cname, "github.com/mus-format/musgen-go/testutil/time/testutil.MyTime")
 					return wantTypeData.FullName, nil
 				})
 
@@ -533,8 +533,8 @@ func TestTypeDataBuilder(t *testing.T) {
 			mocks = []*mok.Mock{conv.Mock}
 		)
 		d, err := b.BuildTimeData(reflect.TypeFor[time_testdata.MyTime](), nil)
-		asserterror.EqualError(err, wantErr, t)
-		asserterror.EqualDeep(d, wantTypeData, t)
+		asserterror.EqualError(t, err, wantErr)
+		asserterror.EqualDeep(t, d, wantTypeData)
 
 		if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 			t.Error(infomap)
