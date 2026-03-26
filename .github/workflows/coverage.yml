@@ -26,4 +26,4 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          slug: mus-format/musgen-go
+          slug: mus-format/mus-gen-go
