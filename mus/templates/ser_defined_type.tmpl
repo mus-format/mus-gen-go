@@ -1,43 +1,40 @@
-{{/* data.TypeData */}}
-{{- $serVar := SerVar .FullName }}
-{{- $serType := SerType .FullName }}
-{{- $v := SerReceiver . }}
-{{- $tmp := TmpVar . }}
-{{- $Type := RelName .FullName .Gops }}
-{{- $f := index .Fields 0 }}
-{{- $fieldSer := SerOf $f.FullName .Tops .Gops }}
-{{- $mslp := .Gops.MarshalSignatureLastParam }}
-{{- $mlp := .Gops.MarshalLastParam true }}
-{{- $uslp := .Gops.UnmarshalSignatureLastParam }}
-{{- $ulp := .Gops.UnmarshalLastParam true}}
-{{- $gops := .Gops }}
+{{/* spec.DefinedType */}}
+{{- $v := Ser.Val . }}
+{{- $serVar := Ser.Var .FullName }}
+{{- $serType := Ser.Type .FullName }}
+{{- $type := Ser.RelName .FullName}}
+{{- $fieldSer := Ser.Of .UnderlyingTypeName .Tops .Gops }}
+{{- $mslp := Tmpl.MarshalSignatureLastParam .Gops }}
+{{- $mlp := Tmpl.MarshalLastParam true .Gops }}
+{{- $uslp := Tmpl.UnmarshalSignatureLastParam .Gops }}
+{{- $ulp := Tmpl.UnmarshalLastParam true .Gops }}
 
-{{- $ft := RelName $f.FullName .Gops }}
-{{- if PtrType $f.FullName }}
-  {{- $ft = print "(" (RelName $f.FullName .Gops) ")" }}
+{{- $ft := Ser.RelName .UnderlyingTypeName }}
+{{- if Tmpl.PtrType .UnderlyingTypeName }}
+  {{- $ft = print "(" (Ser.RelName .UnderlyingTypeName) ")" }}
 {{- end }}
 
 var {{ $serVar }} = {{ $serType }}{}
 
 type {{ $serType }} struct{}
 
-func (s {{ $serType }}) Marshal({{ $v }} {{ $Type }}, {{ $mslp }}) (n int {{ if $gops.Stream }} , err error {{ end }}) {
+func (s {{ $serType }}) Marshal({{ $v }} {{ $type }}, {{ $mslp }}) (n int {{ if .Gops.Stream }} , err error {{ end }}) {
   return {{ $fieldSer }}.Marshal({{ $ft }}({{ $v }}), {{ $mlp }})
 }
 
-func (s {{ $serType }}) Unmarshal({{ $uslp }}) ({{ $v }} {{ $Type }}, n int, err error) {
-  {{ $tmp }}, n, err := {{ $fieldSer }}.Unmarshal({{ $ulp }})
+func (s {{ $serType }}) Unmarshal({{ $uslp }}) ({{ $v }} {{ $type }}, n int, err error) {
+  tmp, n, err := {{ $fieldSer }}.Unmarshal({{ $ulp }})
     if err != nil {
       return
     }
-  {{ $v }} = {{ $Type }}({{ $tmp }})
-  {{- if and .Tops (ne .Tops.Validator "") }}
+  {{ $v }} = {{ $type }}(tmp)
+  {{- if ne .Tops.Validator "" }}
     err = {{ .Tops.Validator }}({{ $v }})
   {{- end }}
   return
 }
 
-func (s {{ $serType }}) Size({{ $v }} {{ $Type }}) (size int) {
+func (s {{ $serType }}) Size({{ $v }} {{ $type }}) (size int) {
   return {{ $fieldSer }}.Size({{ $ft }}({{ $v }}))
 }
 

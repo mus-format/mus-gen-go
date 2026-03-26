@@ -3,10 +3,10 @@ package musgen
 const (
 	definedTypeSerTmpl  = "ser_defined_type.tmpl"
 	structSerTmpl       = "ser_struct.tmpl"
-	dtsTmpl             = "ser_dts.tmpl"
+	typedSerTmpl        = "ser_typed.tmpl"
 	interfaceSerTmpl    = "ser_interface.tmpl"
 	packageTmpl         = "package.tmpl"
 	importsTmpl         = "imports.tmpl"
 	anonDefinitionsTmpl = "anon_definitions.tmpl"
-	dtmsDefinitionTmpl  = "dtms_definition.tmpl"
+	dtmsDefinitionTmpl  = "dtm_definition.tmpl"
 )

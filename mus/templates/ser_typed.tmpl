@@ -1,0 +1,7 @@
+{{/* spec.Type */}}
+{{- $typedSerVar := Ser.TypedVar .FullName }}
+{{- $dtmVar := Ser.DTMVar .FullName }}
+{{- $serVar := Ser.Var .FullName }}
+{{- $type := Ser.RelName .FullName }}
+
+var {{ $typedSerVar }} = typed.NewTypedSer({{ $dtmVar }}, {{ $serVar }})

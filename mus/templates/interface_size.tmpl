@@ -1,18 +1,15 @@
 {{/* data.TypeData */}}
-{{- $v := SerReceiver . }}
-{{- $iops := .Iops }}
-{{- $gops := .Gops }}
-{{- if $iops.Marshaller }}
-	{{- $ext := .Gops.ExtPackageName }}
-	if m, ok := {{ $v }}.({{ $ext }}.MarshallerTypedMUS); ok {
+{{- $v := Ser.Val . }}
+{{- if .Iops.Marshaller }}
+	if m, ok := {{ $v }}.(mus.MarshallerTyped); ok {
 		return m.SizeTypedMUS()
 	}
-	panic(fmt.Sprintf("%v doesn't implement the {{ $ext }}.MarshallerTypedMUS interface", reflect.TypeOf({{ $v }})))
+	panic(fmt.Sprintf("%v doesn't implement the mus.MarshallerTyped interface", reflect.TypeOf({{ $v }})))
 {{- else }}
 	switch t := {{ $v }}.(type) {
-	{{- range $i, $e := .Impls }}
-		case {{ RelName $e $gops }}:
-			return {{ DTSVar $e }}.Size(t)
+	{{- range $e := .Impls }}
+		case {{ Ser.RelName $e }}:
+			return {{ Ser.TypedVar $e }}.Size(t)
 	{{- end }}
 		default:
 			panic(fmt.Sprintf(com.ErrorPrefix+"unexpected %v type", t))

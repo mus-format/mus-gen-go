@@ -1,38 +1,49 @@
-package typeops
+package tpopts
 
 import "fmt"
 
 const (
-	UndefinedTimeUnit TimeUnit = iota
-	Sec
-	Milli
-	Micro
-	Nano
-	SecUTC
-	MilliUTC
-	MicroUTC
-	NanoUTC
+	// TimeUnitUndefined represents an undefined time unit.
+	TimeUnitUndefined TimeUnit = iota
+	// TimeUnitSec represents seconds.
+	TimeUnitSec
+	// TimeUnitMilli represents milliseconds.
+	TimeUnitMilli
+	// TimeUnitMicro represents microseconds.
+	TimeUnitMicro
+	// TimeUnitNano represents nanoseconds.
+	TimeUnitNano
+	// TimeUnitSecUTC represents seconds in UTC.
+	TimeUnitSecUTC
+	// TimeUnitMilliUTC represents milliseconds in UTC.
+	TimeUnitMilliUTC
+	// TimeUnitMicroUTC represents microseconds in UTC.
+	TimeUnitMicroUTC
+	// TimeUnitNanoUTC represents nanoseconds in UTC.
+	TimeUnitNanoUTC
 )
 
+// TimeUnit represents the time unit used for time.Time values.
 type TimeUnit int
 
+// Ser returns the name of the serialization function for the time unit.
 func (u TimeUnit) Ser() string {
 	switch u {
-	case UndefinedTimeUnit, Sec:
+	case TimeUnitSec:
 		return "TimeUnix"
-	case Milli:
+	case TimeUnitMilli:
 		return "TimeUnixMilli"
-	case Micro:
+	case TimeUnitMicro:
 		return "TimeUnixMicro"
-	case Nano:
+	case TimeUnitNano:
 		return "TimeUnixNano"
-	case SecUTC:
+	case TimeUnitSecUTC:
 		return "TimeUnixUTC"
-	case MilliUTC:
+	case TimeUnitMilliUTC:
 		return "TimeUnixMilliUTC"
-	case MicroUTC:
+	case TimeUnitMicroUTC:
 		return "TimeUnixMicroUTC"
-	case NanoUTC:
+	case TimeUnitNanoUTC:
 		return "TimeUnixNanoUTC"
 	default:
 		panic(fmt.Sprintf("unexpected TimeUnit %v", u))

@@ -6,45 +6,58 @@ package musgen
 
 import (
 	"bytes"
+	"embed"
 	"go/parser"
 	"go/token"
+	"io/fs"
 	"reflect"
 	"text/template"
 
-	"github.com/mus-format/musgen-go/data"
-	"github.com/mus-format/musgen-go/data/builders"
-	genops "github.com/mus-format/musgen-go/options/generate"
-	introps "github.com/mus-format/musgen-go/options/interface"
-	structops "github.com/mus-format/musgen-go/options/struct"
-	typeops "github.com/mus-format/musgen-go/options/type"
-	"github.com/mus-format/musgen-go/typename"
+	genops "github.com/mus-format/mus-gen-go/options/gen"
+	intropts "github.com/mus-format/mus-gen-go/options/interface"
+	stopts "github.com/mus-format/mus-gen-go/options/struct"
+	tpopts "github.com/mus-format/mus-gen-go/options/type"
+	"github.com/mus-format/mus-gen-go/spec"
+	bldr "github.com/mus-format/mus-gen-go/spec/builder"
+	cnvtr "github.com/mus-format/mus-gen-go/spec/converter"
+	"github.com/mus-format/mus-gen-go/typename"
 	"golang.org/x/tools/imports"
 )
 
-// NewCodeGenerator creates a new CodeGenerator.
-func NewCodeGenerator(ops ...genops.SetOption) (g *CodeGenerator, err error) {
+// Generator is responsible for generating MUS serialization code.
+type Generator struct {
+	baseTmpl      *template.Template
+	typeBuilder   bldr.TypeBuilder
+	crossgenTypes map[typename.FullName]struct{}
+	anonMap       map[spec.AnonSerName]spec.AnonType
+	genSl         []fileData
+	dtmTypes      [][]string
+	bs            []byte
+	gops          genops.Options
+}
+
+// NewGenerator creates a new Generator.
+func NewGenerator(opts ...genops.SetOption) (g *Generator, err error) {
 	gops := genops.New()
-	if err = genops.Apply(ops, &gops); err != nil {
+	if err = genops.Apply(opts, &gops); err != nil {
 		return
 	}
 	var (
 		crossgenTypes = map[typename.FullName]struct{}{}
-		typeBuilder   = builders.NewTypeDataBuilder(builders.NewConverter(gops),
-			gops)
-		anonBuilder = builders.NewAnonDataBuilder(typeBuilder, gops)
+		converter     = cnvtr.NewTypeNameConverter(gops)
+		typeBuilder   = bldr.NewTypeBuilder(converter, gops)
 	)
 	baseTmpl := template.New("base")
-	registerFuncs(typeBuilder, anonBuilder, crossgenTypes, baseTmpl, gops)
+	registerFns(typeBuilder, converter, crossgenTypes, baseTmpl, gops)
 	err = registerTemplates(baseTmpl)
 	if err != nil {
 		panic(err)
 	}
-	g = &CodeGenerator{
+	g = &Generator{
 		baseTmpl:      baseTmpl,
 		typeBuilder:   typeBuilder,
-		anonBuilder:   anonBuilder,
 		crossgenTypes: crossgenTypes,
-		anonMap:       map[data.AnonSerName]data.AnonData{},
+		anonMap:       map[spec.AnonSerName]spec.AnonType{},
 		genSl:         []fileData{},
 		bs:            []byte{},
 		gops:          gops,
@@ -52,110 +65,81 @@ func NewCodeGenerator(ops ...genops.SetOption) (g *CodeGenerator, err error) {
 	return
 }
 
-// CodeGenerator is responsible for generating MUS serialization code.
-type CodeGenerator struct {
-	baseTmpl      *template.Template
-	typeBuilder   TypeDataBuilder
-	anonBuilder   AnonSerDataBuilder
-	crossgenTypes map[typename.FullName]struct{}
-	anonMap       map[data.AnonSerName]data.AnonData
-	genSl         []fileData
-	dtmTypes      [][]string
-	bs            []byte
-	gops          genops.Options
-}
-
-// AddDefinedType adds the specified type to the CodeGenerator to produce a
+// AddDefinedType adds the specified type to the Generator to produce a
 // serializer for it. This method supports types defined with the following
 // source types: number, string, array, slice, map, pointer.
-func (g *CodeGenerator) AddDefinedType(t reflect.Type, ops ...typeops.SetOption) (
+func (g *Generator) AddDefinedType(t reflect.Type, opts ...tpopts.SetOption) (
 	err error,
 ) {
-	var tops *typeops.Options
-	if len(ops) > 0 {
-		tops = &typeops.Options{}
-		typeops.Apply(ops, tops)
-	}
-	typeData, err := g.typeBuilder.BuildDefinedTypeData(t, tops)
+	tops := tpopts.Options{}
+	tpopts.Apply(&tops, opts...)
+	definedType, err := g.typeBuilder.BuildDefinedType(t, tops)
 	if err != nil {
 		return
 	}
-	g.fillCrossgen(t, typeData.FullName)
-	g.anonBuilder.Collect(typeData.Fields[0].FullName, g.anonMap, tops)
-	g.genSl = append(g.genSl, fileData{definedTypeSerTmpl, typeData})
+	g.fillCrossgen(t, definedType.FullName)
+	g.typeBuilder.CollectAnonTypes(definedType.UnderlyingTypeName, g.anonMap, tops)
+	g.genSl = append(g.genSl, fileData{definedTypeSerTmpl, definedType})
 	return
 }
 
-// AddStruct adds the specified type to the CodeGenerator to produce a
+// AddStruct adds the specified type to the Generator to produce a
 // serializer for it. This method supports types definined with the struct
 // source type.
-func (g *CodeGenerator) AddStruct(t reflect.Type, ops ...structops.SetOption) (
+func (g *Generator) AddStruct(t reflect.Type, opts ...stopts.SetOption) (
 	err error,
 ) {
-	sops := structops.New()
-	if len(ops) > 0 {
-		structops.Apply(ops, &sops)
+	sops := stopts.Options{}
+	stopts.Apply(opts, &sops)
+	if sops.UnderlyingTime != nil {
+		return g.addStructUnderlyingTime(t, sops)
 	}
-	var typeData data.TypeData
-	if sops.Tops != nil && sops.Tops.SourceType == typeops.Time {
-		typeData, err = g.typeBuilder.BuildTimeData(t, sops.Tops)
-		if err != nil {
-			return
-		}
-		g.fillCrossgen(t, typeData.FullName)
-		g.genSl = append(g.genSl, fileData{definedTypeSerTmpl, typeData})
-		return
-	}
-	typeData, err = g.typeBuilder.BuildStructData(t, sops)
+	structType, err := g.typeBuilder.BuildStructType(t, sops)
 	if err != nil {
 		return
 	}
-	for i, fd := range typeData.SerializedFields() {
-		var tops *typeops.Options
+	for i, fd := range structType.SerializedFields() {
+		var tops tpopts.Options
 		if len(sops.Fields) > 0 {
-			tops = sops.Fields[i]
+			tops = sops.Fields[i].Type
 		}
-		g.anonBuilder.Collect(fd.FullName, g.anonMap, tops)
+		g.typeBuilder.CollectAnonTypes(fd.FullName, g.anonMap, tops)
 	}
-	g.fillCrossgen(t, typeData.FullName)
-	g.genSl = append(g.genSl, fileData{structSerTmpl, typeData})
+	g.fillCrossgen(t, structType.FullName)
+	g.genSl = append(g.genSl, fileData{structSerTmpl, structType})
 	return
 }
 
-// AddDTS adds the specified type to the CodeGenerator to produce a DTS
+// AddTyped adds the specified type to the Generator to produce a typed
 // definition for it. This method supports all types acceptable by the
 // AddDefinedType, AddStruct, and AddInterface methods.
-func (g *CodeGenerator) AddDTS(t reflect.Type, ops ...typeops.SetOption) (
+func (g *Generator) AddTyped(t reflect.Type, opts ...tpopts.SetOption) (
 	err error,
 ) {
-	tops := typeops.Options{}
-	if len(ops) > 0 {
-		typeops.Apply(ops, &tops)
-	}
-	typeData, err := g.typeBuilder.BuildDTSData(t)
+	tops := tpopts.Options{}
+	tpopts.Apply(&tops, opts...)
+	tp, err := g.typeBuilder.BuildTyped(t)
 	if err != nil {
 		return
 	}
-	g.genSl = append(g.genSl, fileData{dtsTmpl, typeData})
+	g.genSl = append(g.genSl, fileData{typedSerTmpl, tp})
 	return
 }
 
-// AddInterface adds the specified type to the CodeGenerator to produce a
+// AddInterface adds the specified type to the Generator to produce a
 // serializer for it. This method supports types definined with the interface
 // source type.
-func (g *CodeGenerator) AddInterface(t reflect.Type, ops ...introps.SetOption) (
+func (g *Generator) AddInterface(t reflect.Type, opts ...intropts.SetOption) (
 	err error,
 ) {
-	iops := introps.Options{}
-	if ops != nil {
-		introps.Apply(ops, &iops)
-	}
-	typeData, err := g.typeBuilder.BuildInterfaceData(t, iops)
+	iops := intropts.Options{}
+	intropts.Apply(&iops, opts...)
+	interfaceType, err := g.typeBuilder.BuildInterfaceType(t, iops)
 	if err != nil {
 		return
 	}
-	g.fillCrossgen(t, typeData.FullName)
-	g.genSl = append(g.genSl, fileData{interfaceSerTmpl, typeData})
+	g.fillCrossgen(t, interfaceType.FullName)
+	g.genSl = append(g.genSl, fileData{interfaceSerTmpl, interfaceType})
 	return
 }
 
@@ -167,54 +151,55 @@ func (g *CodeGenerator) AddInterface(t reflect.Type, ops ...introps.SetOption) (
 //
 // This helper method is equivalent to calling, in order:
 //
-//	AddStruct/AddDefinedType → AddDTS → AddInterface
-func (g *CodeGenerator) RegisterInterface(t reflect.Type,
-	ops ...introps.SetRegisterOption,
+//	AddStruct/AddDefinedType → AddTyped → AddInterface
+func (g *Generator) RegisterInterface(t reflect.Type,
+	opts ...intropts.SetRegisterOption,
 ) (err error) {
-	rops := introps.RegisterOptions{}
-	if ops != nil {
-		introps.ApplyRegister(ops, &rops)
+	rops := intropts.RegisterOptions{}
+	if opts != nil {
+		intropts.ApplyRegister(&rops, opts...)
 	}
 	var (
 		l     = len(rops.StructImpls) + len(rops.DefinedTypeImpls)
-		iops  = make([]introps.SetOption, 0, l)
+		iops  = make([]intropts.SetOption, 0, l)
 		types = make([]string, 0, l)
 	)
 	for _, impl := range rops.StructImpls {
-		err = g.AddStruct(impl.Type, impl.Ops...)
+		err = g.AddStruct(impl.Type, impl.Opts...)
 		if err != nil {
 			return
 		}
-		err = g.AddDTS(impl.Type)
+		err = g.AddTyped(impl.Type)
 		if err != nil {
 			return
 		}
-		iops = append(iops, introps.WithImpl(impl.Type))
+		iops = append(iops, intropts.WithImpl(impl.Type))
 		types = append(types, impl.Type.Name())
 	}
 	for _, impl := range rops.DefinedTypeImpls {
-		err = g.AddDefinedType(impl.Type, impl.Ops...)
+		err = g.AddDefinedType(impl.Type, impl.Opts...)
 		if err != nil {
 			return
 		}
-		err = g.AddDTS(impl.Type)
+		err = g.AddTyped(impl.Type)
 		if err != nil {
 			return
 		}
-		iops = append(iops, introps.WithImpl(impl.Type))
+		iops = append(iops, intropts.WithImpl(impl.Type))
 		types = append(types, impl.Type.Name())
 	}
 	g.addDTM(types)
 	return g.AddInterface(t, iops...)
 }
 
-func (g *CodeGenerator) addDTM(types []string) {
+func (g *Generator) addDTM(types []string) {
 	g.dtmTypes = append(g.dtmTypes, types)
 }
 
-// Generate produces the serialization code. The output is intended to be saved
-// to a file.
-func (g *CodeGenerator) Generate() (bs []byte, err error) {
+// Generate produces the serialization code.
+//
+// The output is intended to be saved to a file.
+func (g *Generator) Generate() (bs []byte, err error) {
 	tmp := g.generatePackage()
 	tmp = append(tmp, g.generateImports()...)
 	tmp = append(tmp, g.generateDTMs()...)
@@ -233,17 +218,31 @@ func (g *CodeGenerator) Generate() (bs []byte, err error) {
 	return
 }
 
-func (g *CodeGenerator) generatePackage() (bs []byte) {
+func (g *Generator) addStructUnderlyingTime(t reflect.Type, sops stopts.Options) (
+	err error,
+) {
+	uops := stopts.UnderlyingTimeOptions{}
+	stopts.UnderlyingTimeApply(sops.UnderlyingTime, &uops)
+	definedType, err := g.typeBuilder.BuildTimeType(t, uops, sops.Validator)
+	if err != nil {
+		return
+	}
+	g.fillCrossgen(t, definedType.FullName)
+	g.genSl = append(g.genSl, fileData{definedTypeSerTmpl, definedType})
+	return
+}
+
+func (g *Generator) generatePackage() (bs []byte) {
 	return g.generatePart(packageTmpl, g.gops)
 }
 
-func (g *CodeGenerator) generateImports() (bs []byte) {
+func (g *Generator) generateImports() (bs []byte) {
 	return g.generatePart(importsTmpl, g.gops)
 }
 
-func (g *CodeGenerator) generateAnonymosDefinitions() (bs []byte) {
+func (g *Generator) generateAnonymosDefinitions() (bs []byte) {
 	return g.generatePart(anonDefinitionsTmpl, struct {
-		Map map[data.AnonSerName]data.AnonData
+		Map map[spec.AnonSerName]spec.AnonType
 		Ops genops.Options
 	}{
 		Map: g.anonMap,
@@ -251,14 +250,14 @@ func (g *CodeGenerator) generateAnonymosDefinitions() (bs []byte) {
 	})
 }
 
-func (g *CodeGenerator) generateSerializers() (bs []byte) {
+func (g *Generator) generateSerializers() (bs []byte) {
 	for _, item := range g.genSl {
 		bs = append(bs, g.generatePart(item.fileName, item.typeData)...)
 	}
 	return
 }
 
-func (g *CodeGenerator) generatePart(tmplName string, a any) (bs []byte) {
+func (g *Generator) generatePart(tmplName string, a any) (bs []byte) {
 	buf := bytes.NewBuffer(make([]byte, 0))
 	err := g.baseTmpl.ExecuteTemplate(buf, tmplName, a)
 	if err != nil {
@@ -268,7 +267,7 @@ func (g *CodeGenerator) generatePart(tmplName string, a any) (bs []byte) {
 	return
 }
 
-func (g *CodeGenerator) generateDTMs() (bs []byte) {
+func (g *Generator) generateDTMs() (bs []byte) {
 	buf := bytes.Buffer{}
 	for _, types := range g.dtmTypes {
 		err := g.baseTmpl.ExecuteTemplate(&buf, dtmsDefinitionTmpl, types)
@@ -280,17 +279,17 @@ func (g *CodeGenerator) generateDTMs() (bs []byte) {
 	return
 }
 
-func (g *CodeGenerator) fillCrossgen(t reflect.Type, fullName typename.FullName) {
+func (g *Generator) fillCrossgen(t reflect.Type, fullName typename.FullName) {
 	if g.crossGeneration(t) {
 		g.crossgenTypes[fullName] = struct{}{}
 	}
 }
 
-func (g *CodeGenerator) crossGeneration(t reflect.Type) bool {
+func (g *Generator) crossGeneration(t reflect.Type) bool {
 	return t.PkgPath() != string(g.gops.PkgPath)
 }
 
-func (g *CodeGenerator) checkSyntax(bs []byte) (err error) {
+func (g *Generator) checkSyntax(bs []byte) (err error) {
 	var (
 		fs  = token.NewFileSet()
 		src = string(bs)
@@ -301,34 +300,33 @@ func (g *CodeGenerator) checkSyntax(bs []byte) (err error) {
 
 type fileData struct {
 	fileName string
-	typeData data.TypeData
+	typeData any
 }
 
-func registerFuncs(typeBuilder TypeDataBuilder, anonBuilder AnonSerDataBuilder,
+//go:embed templates/*.tmpl
+var templatesFS embed.FS
+
+func registerFns(typeBuilder bldr.TypeBuilder, converter cnvtr.TypeNameConverter,
 	crossgenTypes map[typename.FullName]struct{},
 	tmpl *template.Template,
-	gops genops.Options,
+	gopts genops.Options,
 ) {
 	var (
-		keywordFns = NewKeywordFns(typeBuilder, crossgenTypes, gops)
-		optionFns  = NewOptionFns(typeBuilder)
-		utilFns    = NewUtilFns(keywordFns)
-		serFns     = NewSerFns(keywordFns, utilFns, anonBuilder, typeBuilder)
+		tmplFns = TmplFns{tmpl: tmpl}
+		serFns  = NewSerFns(converter, typeBuilder, crossgenTypes, tmplFns, gopts)
 	)
 	m := map[string]any{}
-	keywordFns.RegisterItself(m)
-	optionFns.RegisterItself(m)
-	utilFns.RegisterItself(m, tmpl)
-	serFns.RegisterItself(m)
+	m["Tmpl"] = func() TmplFns {
+		return tmplFns
+	}
+	m["Ser"] = func() SerFns {
+		return serFns
+	}
 	tmpl.Funcs(m)
 }
 
 func registerTemplates(tmpl *template.Template) (err error) {
-	for name, template := range templates {
-		_, err = tmpl.New(name).Parse(template)
-		if err != nil {
-			return
-		}
-	}
-	return nil
+	subFS, _ := fs.Sub(templatesFS, "templates")
+	_, err = tmpl.ParseFS(subFS, "*.tmpl")
+	return
 }

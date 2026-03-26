@@ -1,11 +1,8 @@
-{{- /* {SerReceiver string, FieldsCount int, Field data.FieldData, Index int, Gops genops.Options} */}}
-{{- $ulp := .Gops.UnmarshalLastParam false }}
-{{- if eq .Index 0 }}
-	{{- $ulp = .Gops.UnmarshalLastParam true }}
-{{- end}}
+{{- /* {Val string, FieldsCount int, Field data.FieldData, Index int, Gops genops.Options} */}}
+{{- $ulp := Tmpl.UnmarshalLastParam (eq .Index 0) .Gops }}
 
-{{- $vf := print .SerReceiver "." .Field.FieldName }}
-{{- $fieldSer := SerOf .Field.FullName .Tops .Gops }}
+{{- $vf := print .Val "." .Field.FieldName }}
+{{- $fieldSer := Ser.Of .Field.FullName .Tops .Gops }}
 {{- if eq .Index 1 }}
 	var n1 int
 {{- end }}
@@ -17,7 +14,7 @@
 {{- if ge .Index 1 }}
 	n += n1
 {{- end }}		
-{{- if and (ne .FieldsCount 1) (ne .Index (minus .FieldsCount 1))}}
+{{- if and (ne .FieldsCount 1) (ne .Index (Tmpl.Minus .FieldsCount 1))}}
 	if err != nil {
 		return
 	}

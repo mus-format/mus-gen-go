@@ -11,17 +11,17 @@
 				{{- else }}
 					{{- $constructorName = "NewStringSer" }}
 				{{- end }}
-				{{ $name }} = ord.{{ $constructorName }}({{ StringOps $ad }})
+				{{ $name }} = ord.{{ $constructorName }}({{ Ser.StringOpts $ad }})
 			{{- end }}
 {{- /* array type */}}
 			{{- if eq $ad.Kind.String "array" }}
-				{{- $elemSer := AnonElemSer $ad $gops }}
+				{{- $elemSer := Ser.Elem $ad $gops }}
 				{{- if ne $ad.ElemVl "nil" }}
 					{{- $constructorName = "NewValidArraySer" }}
 				{{- else }}
 					{{- $constructorName = "NewArraySer" }}
 				{{- end }}
-				{{ $name }} = unsafe.{{ $constructorName }}[{{ RelName $ad.ArrType $gops }}, {{ RelName $ad.ElemType $gops }}]({{ $elemSer }}{{ WithComma (ArrayOps $ad) }})
+				{{ $name }} = unsafe.{{ $constructorName }}[{{ Ser.RelName $ad.ArrType }}]({{ $elemSer }}{{ Tmpl.WithComma (Ser.ArrayOpts $ad) }})
 			{{- end }}
 {{- /* byte slice type */}}
 			{{- if eq $ad.Kind.String "byteSlice" }}
@@ -30,33 +30,33 @@
 				{{- else }}
 					{{- $constructorName = "NewByteSliceSer" }}
 				{{- end }}
-				{{ $name }} = ord.{{ $constructorName }}({{ ByteSliceOps $ad }})
+				{{ $name }} = ord.{{ $constructorName }}({{ Ser.ByteSliceOpts $ad }})
 			{{- end }}
 {{- /* slice type */}}
 			{{- if eq $ad.Kind.String "slice" }}
-				{{- $elemSer := AnonElemSer $ad $gops }}
+				{{- $elemSer := Ser.Elem $ad $gops }}
 				{{- if or (ne $ad.LenVl "nil") (ne $ad.ElemVl "nil") }}
 					{{- $constructorName = "NewValidSliceSer" }}
 				{{- else }}
 					{{- $constructorName = "NewSliceSer" }}
 				{{- end }}
-				{{ $name }} = ord.{{ $constructorName }}[{{ RelName $ad.ElemType $gops }}]({{ $elemSer }}{{ WithComma (SliceOps $ad) }})
+				{{ $name }} = ord.{{ $constructorName }}({{ $elemSer }}{{ Tmpl.WithComma (Ser.SliceOpts $ad) }})
 			{{- end }}
 {{- /* map type */}}
 			{{- if eq $ad.Kind.String "map" }}
-				{{- $keySer := AnonKeySer $ad $gops }}
-				{{- $elemSer := AnonElemSer $ad $gops }}
+				{{- $keySer := Ser.Key $ad $gops }}
+				{{- $elemSer := Ser.Elem $ad $gops }}
 				{{- if or (ne $ad.LenVl "nil") (ne $ad.KeyVl "nil") (ne $ad.ElemVl "nil") }}
 					{{- $constructorName = "NewValidMapSer" }}
 				{{- else}}
 					{{- $constructorName = "NewMapSer" }}
 				{{- end }}
-				{{ $name }} = ord.{{ $constructorName }}[{{ RelName $ad.KeyType $gops }}, {{ RelName $ad.ElemType $gops }}]({{ $keySer}}, {{ $elemSer }}{{ WithComma (MapOps $ad) }})
+				{{ $name }} = ord.{{ $constructorName }}({{ $keySer}}, {{ $elemSer }}{{ Tmpl.WithComma (Ser.MapOpts $ad) }})
 			{{- end }}
 {{- /* ptr type */}}
 			{{- if eq $ad.Kind.String "ptr" }}
-				{{- $elemSer := AnonElemSer $ad $gops }}
-				{{ $name }} = ord.NewPtrSer[{{ RelName $ad.ElemType $gops }}]({{ $elemSer }})
+				{{- $elemSer := Ser.Elem $ad $gops }}
+				{{ $name }} = ord.NewPtrSer({{ $elemSer }})
 			{{- end }}
 		{{- end }}
 	)

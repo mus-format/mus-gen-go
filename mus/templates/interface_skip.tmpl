@@ -1,21 +1,19 @@
 {{/* data.TypeData */}}
-{{- $fulp := .Gops.UnmarshalLastParam true }}
-{{- $ulp := .Gops.UnmarshalLastParam false }}
-{{- $v := SerReceiver . }}
-{{- $iops := .Iops }}
-{{- $gops := .Gops }}
-dtm, n, err := dts.DTMSer.Unmarshal({{ $fulp }})
+{{- $v := Ser.Val . }}
+{{- $fulp := Tmpl.UnmarshalLastParam true .Gops }}
+{{- $ulp := Tmpl.UnmarshalLastParam false .Gops }}
+dtm, n, err := typed.DTMSer.Unmarshal({{ $fulp }})
 if err != nil {
 	return
 }
 var n1 int
 switch dtm {
-{{- range $i, $e := .Impls }}
-	case {{ DTMVar $e }}:
-		n1, err = {{ DTSVar $e }}.SkipData({{ $ulp }})
+{{- range $e := .Impls }}
+	case {{ Ser.DTMVar $e }}:
+		n1, err = {{ Ser.TypedVar $e }}.SkipData({{ $ulp }})
 {{- end }}
 	default:
-		err = fmt.Errorf(com.ErrorPrefix+"unexpected %v DTM", dtm)
+		err = com.NewUnexpectedDTMError(dtm)
 		return
 }
 n += n1

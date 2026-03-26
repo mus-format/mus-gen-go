@@ -1,7 +1,0 @@
-{{/* data.TypeData */}}
-{{- $dtsVar := DTSVar .FullName }}
-{{- $dtmVar := DTMVar .FullName }}
-{{- $serVar := SerVar .FullName }}
-{{- $Type := RelName .FullName .Gops }}
-
-var {{ $dtsVar }} = dts.New[{{ $Type }}]({{ $dtmVar }}, {{ $serVar }})

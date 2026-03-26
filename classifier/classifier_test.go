@@ -4,12 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	contr_testdata "github.com/mus-format/musgen-go/testutil/container"
-	generic_testdata "github.com/mus-format/musgen-go/testutil/generic"
-	intr_testdata "github.com/mus-format/musgen-go/testutil/interface"
-	ptr_testdata "github.com/mus-format/musgen-go/testutil/pointer"
-	prim_testdata "github.com/mus-format/musgen-go/testutil/primitive"
-	struct_testdata "github.com/mus-format/musgen-go/testutil/struct"
+	types "github.com/mus-format/mus-gen-go/test/classifier"
 
 	asserterror "github.com/ymz-ncnk/assert/error"
 )
@@ -17,30 +12,30 @@ import (
 func TestClassifier(t *testing.T) {
 	var (
 		undefinedStructType     = reflect.TypeFor[struct{}]()
-		definedStructType       = reflect.TypeFor[struct_testdata.MyStruct]()
-		doubleDefinedStructType = reflect.TypeFor[struct_testdata.DoubleDefinedMyStruct]()
+		definedStructType       = reflect.TypeFor[types.MyStruct]()
+		doubleDefinedStructType = reflect.TypeFor[types.DoubleDefinedMyStruct]()
 
 		undefinedInterfaceType     = reflect.TypeFor[interface{ Print() }]()
-		definedInterfaceType       = reflect.TypeFor[intr_testdata.MyInterface]()
-		doubleDefinedInterfaceType = reflect.TypeFor[intr_testdata.DoubleDefinedMyInterface]()
+		definedInterfaceType       = reflect.TypeFor[types.MyInterface]()
+		doubleDefinedInterfaceType = reflect.TypeFor[types.DoubleDefinedMyInterface]()
 		anyType                    = reflect.TypeFor[any]()
 
 		undefinedPrimitiveType = reflect.TypeFor[int]()
-		definedPrimitiveType   = reflect.TypeFor[prim_testdata.MyInt]()
+		definedPrimitiveType   = reflect.TypeFor[types.MyInt]()
 
 		undefinedContainerType           = reflect.TypeFor[[]int]()
-		definedContainerType             = reflect.TypeFor[contr_testdata.MySlice]()
-		definedParametrizedContainerType = reflect.TypeFor[generic_testdata.MySlice[int]]()
+		definedContainerType             = reflect.TypeFor[types.MySlice]()
+		definedParametrizedContainerType = reflect.TypeFor[types.MyGenericSlice[int]]()
 
 		ptrPrimitiveType = reflect.TypeFor[*int]()
 		ptrContainerType = reflect.TypeFor[*[]int]()
 		ptrStructType    = reflect.TypeFor[*struct{}]()
 		ptrInterfaceType = reflect.TypeFor[*interface{ Print() }]()
 
-		ptrDefinedPrimitiveType = reflect.TypeFor[ptr_testdata.MyIntPtr]()
-		ptrDefinedContainerType = reflect.TypeFor[ptr_testdata.MySlicePtr]()
-		ptrDefinedStructType    = reflect.TypeFor[ptr_testdata.MyStructPtr]()
-		ptrDefinedInterfaceType = reflect.TypeFor[ptr_testdata.MyInterfacePtr]()
+		ptrDefinedPrimitiveType = reflect.TypeFor[types.MyIntPtr]()
+		ptrDefinedContainerType = reflect.TypeFor[types.MySlicePtr]()
+		ptrDefinedStructType    = reflect.TypeFor[types.MyStructPtr]()
+		ptrDefinedInterfaceType = reflect.TypeFor[types.MyInterfacePtr]()
 	)
 
 	t.Run("DefinedBasicType", func(t *testing.T) {

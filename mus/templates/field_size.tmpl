@@ -1,14 +1,14 @@
-{{- /* {SerReceiver string, FieldsCount int, Field data.FieldData, Index int, Gops genops.Options} */}}
-{{- $vf := print .SerReceiver "." .Field.FieldName }}
-{{- $fieldSer := SerOf .Field.FullName .Tops .Gops }}
+{{- /* {Val string, FieldsCount int, Field data.FieldData, Index int, Gops genopts.Options} */}}
+{{- $vf := print .Val "." .Field.FieldName }}
+{{- $ser := Ser.Of .Field.FullName .Tops .Gops }}
 
-{{- $call := print $fieldSer ".Size(" $vf ")" }}
+{{- $call := print $ser ".Size(" $vf ")" }}
 {{- if eq .FieldsCount 1 }}
 	return {{ $call }}
 {{- else }}
 	{{- if eq .Index 0 }}
 		size = {{ $call }}
-	{{- else if eq .Index (minus .FieldsCount 1) }}
+	{{- else if eq .Index (Tmpl.Minus .FieldsCount 1) }}
 		return size + {{ $call }}
 	{{- else }}
 		size += {{ $call }}

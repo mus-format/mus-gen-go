@@ -1,3 +1,4 @@
+// Package classifier provides functions for classifying Go types.
 package classifier
 
 import (

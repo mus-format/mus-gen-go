@@ -1,31 +1,36 @@
-{{/* data.TypeData */}}
-{{- $serVar := SerVar .FullName }}
-{{- $serType := SerType .FullName }}
-{{- $v := SerReceiver . }}
-{{- $Type := RelName .FullName .Gops }}
+{{/* spec.StructType */}}
+{{- $v := Ser.Val . }}
+{{- $serVar := Ser.Var .FullName }}
+{{- $serType := Ser.Type .FullName }}
+{{- $Type := Ser.RelName .FullName }}
+{{- $mslp := Tmpl.MarshalSignatureLastParam .Gops }}
+{{- $uslp := Tmpl.UnmarshalSignatureLastParam .Gops }}
 {{- $td := . }}
-{{- $mslp := .Gops.MarshalSignatureLastParam }}
-{{- $uslp := .Gops.UnmarshalSignatureLastParam }}
-{{- $gops := .Gops }}
 
 var {{ $serVar }} = {{ $serType }}{}
 
 type {{ $serType }} struct{}
 
-func (s {{ $serType }}) Marshal({{ $v }} {{ $Type }}, {{ $mslp }}) (n int {{ if $gops.Stream }} , err error {{ end }}) {
+func (s {{ $serType }}) Marshal({{ $v }} {{ $Type }}, {{ $mslp }}) (n int {{ if .Gops.Stream }} , err error {{ end }}) {
 	{{- if eq (len .SerializedFields) 0}}
 		return
 	{{- else }}
 		{{- range $i, $f := .SerializedFields }}
-			{{- include "field_marshal.tmpl" (FieldTmplPipe $td $f $i $gops) }}		
+			{{- Tmpl.Include "field_marshal.tmpl" (Ser.FieldTmplPipe $td $f $i .Gops) }}		
 		{{- end }}
 	{{- end }}
 }
 
 func (s {{ $serType }}) Unmarshal({{ $uslp }}) ({{ $v }} {{ $Type }}, n int, err error) {
 	{{- range $i, $f := .SerializedFields }}
-			{{- include "field_unmarshal.tmpl" (FieldTmplPipe $td $f $i $gops) }}		
+		{{- Tmpl.Include "field_unmarshal.tmpl" (Ser.FieldTmplPipe $td $f $i .Gops) }}		
 	{{- end }}
+  {{- if ne .Sops.Validator "" }}
+	  if err != nil {
+			return
+		}
+    err = {{ .Sops.Validator }}({{ $v }})
+  {{- end }}
 	return
 }
 
@@ -34,14 +39,14 @@ func (s {{ $serType }}) Size({{ $v }} {{ $Type }}) (size int) {
 		return
 	{{- else }}
 		{{- range $i, $f := .SerializedFields }}
-			{{- include "field_size.tmpl" (FieldTmplPipe $td $f $i $gops) }}		
+			{{- Tmpl.Include "field_size.tmpl" (Ser.FieldTmplPipe $td $f $i .Gops) }}		
 		{{- end }}
 	{{- end }}
 }
 
 func (s {{ $serType }}) Skip({{ $uslp }}) (n int, err error) {
 	{{- range $i, $f := .SerializedFields }}
-		{{- include "field_skip.tmpl" (FieldTmplPipe $td $f $i $gops) }}		
+		{{- Tmpl.Include "field_skip.tmpl" (Ser.FieldTmplPipe $td $f $i .Gops) }}		
 	{{- end }}
 	return
 }

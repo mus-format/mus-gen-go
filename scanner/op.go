@@ -1,9 +1,9 @@
 package scanner
 
-import typeops "github.com/mus-format/musgen-go/options/type"
+import tpopts "github.com/mus-format/mus-gen-go/options/type"
 
 type Op[T QualifiedName] interface {
-	ProcessType(t Type[T], tops *typeops.Options) error
+	ProcessType(t TypeInfo[T], tops tpopts.Options) error
 	ProcessLeftSquare()
 	ProcessComma()
 	ProcessRightSquare()
@@ -11,7 +11,7 @@ type Op[T QualifiedName] interface {
 
 type ignoreOp[T QualifiedName] struct{}
 
-func (o ignoreOp[T]) ProcessType(t Type[T], tops *typeops.Options) (err error) {
+func (o ignoreOp[T]) ProcessType(t TypeInfo[T], tops tpopts.Options) (err error) {
 	return
 }
 func (o ignoreOp[T]) ProcessLeftSquare()  {}

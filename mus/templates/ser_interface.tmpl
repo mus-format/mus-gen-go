@@ -1,28 +1,27 @@
-{{/* data.TypeData */}}
-{{- $serVar := SerVar .FullName }}
-{{- $serType := SerType .FullName }}
-{{- $v := SerReceiver . }}
-{{- $Type := RelName .FullName .Gops }}
-{{- $mslp := .Gops.MarshalSignatureLastParam }}
-{{- $uslp := .Gops.UnmarshalSignatureLastParam }}
-{{- $gops := .Gops }}
+{{/* spec.InterfaceType */}}
+{{- $serVar := Ser.Var .FullName }}
+{{- $serType := Ser.Type .FullName }}
+{{- $v := Ser.Val . }}
+{{- $type := Ser.RelName .FullName }}
+{{- $mslp := Tmpl.MarshalSignatureLastParam .Gops }}
+{{- $uslp := Tmpl.UnmarshalSignatureLastParam .Gops }}
 
 var {{ $serVar }} = {{ $serType }}{}
 
 type {{ $serType }} struct{}
 
-func (s {{ $serType }}) Marshal({{ $v }} {{ $Type }}, {{ $mslp }}) (n int {{ if $gops.Stream }} , err error {{ end }}) {
-	{{- include "interface_marshal.tmpl" . -}}
+func (s {{ $serType }}) Marshal({{ $v }} {{ $type }}, {{ $mslp }}) (n int {{ if .Gops.Stream }} , err error {{ end }}) {
+	{{- Tmpl.Include "interface_marshal.tmpl" . -}}
 }
 
-func (s {{ $serType }}) Unmarshal({{ $uslp }}) ({{ $v }} {{ $Type }}, n int, err error) {
-	{{- include "interface_unmarshal.tmpl" . -}}
+func (s {{ $serType }}) Unmarshal({{ $uslp }}) ({{ $v }} {{ $type }}, n int, err error) {
+	{{- Tmpl.Include "interface_unmarshal.tmpl" . -}}
 }
 
-func (s {{ $serType }}) Size({{ $v }} {{ $Type }}) (size int) {
-	{{- include "interface_size.tmpl" . -}}
+func (s {{ $serType }}) Size({{ $v }} {{ $type }}) (size int) {
+	{{- Tmpl.Include "interface_size.tmpl" . -}}
 }
 
 func (s {{ $serType }}) Skip({{ $uslp }}) (n int, err error) {
-	{{- include "interface_skip.tmpl" . -}}
+	{{- Tmpl.Include "interface_skip.tmpl" . -}}
 }
