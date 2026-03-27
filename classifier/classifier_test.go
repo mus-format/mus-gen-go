@@ -12,30 +12,30 @@ import (
 func TestClassifier(t *testing.T) {
 	var (
 		undefinedStructType     = reflect.TypeFor[struct{}]()
-		definedStructType       = reflect.TypeFor[types.MyStruct]()
-		doubleDefinedStructType = reflect.TypeFor[types.DoubleDefinedMyStruct]()
+		definedStructType       = reflect.TypeFor[types.Struct]()
+		doubleDefinedStructType = reflect.TypeFor[types.DoubleDefinedStruct]()
 
 		undefinedInterfaceType     = reflect.TypeFor[interface{ Print() }]()
-		definedInterfaceType       = reflect.TypeFor[types.MyInterface]()
-		doubleDefinedInterfaceType = reflect.TypeFor[types.DoubleDefinedMyInterface]()
+		definedInterfaceType       = reflect.TypeFor[types.Interface]()
+		doubleDefinedInterfaceType = reflect.TypeFor[types.DoubleDefinedInterface]()
 		anyType                    = reflect.TypeFor[any]()
 
 		undefinedPrimitiveType = reflect.TypeFor[int]()
-		definedPrimitiveType   = reflect.TypeFor[types.MyInt]()
+		definedPrimitiveType   = reflect.TypeFor[types.Int]()
 
 		undefinedContainerType           = reflect.TypeFor[[]int]()
-		definedContainerType             = reflect.TypeFor[types.MySlice]()
-		definedParametrizedContainerType = reflect.TypeFor[types.MyGenericSlice[int]]()
+		definedContainerType             = reflect.TypeFor[types.Slice]()
+		definedParametrizedContainerType = reflect.TypeFor[types.GenericSlice[int]]()
 
 		ptrPrimitiveType = reflect.TypeFor[*int]()
 		ptrContainerType = reflect.TypeFor[*[]int]()
 		ptrStructType    = reflect.TypeFor[*struct{}]()
 		ptrInterfaceType = reflect.TypeFor[*interface{ Print() }]()
 
-		ptrDefinedPrimitiveType = reflect.TypeFor[types.MyIntPtr]()
-		ptrDefinedContainerType = reflect.TypeFor[types.MySlicePtr]()
-		ptrDefinedStructType    = reflect.TypeFor[types.MyStructPtr]()
-		ptrDefinedInterfaceType = reflect.TypeFor[types.MyInterfacePtr]()
+		ptrDefinedPrimitiveType = reflect.TypeFor[types.IntPtr]()
+		ptrDefinedContainerType = reflect.TypeFor[types.SlicePtr]()
+		ptrDefinedStructType    = reflect.TypeFor[types.StructPtr]()
+		ptrDefinedInterfaceType = reflect.TypeFor[types.InterfacePtr]()
 	)
 
 	t.Run("DefinedBasicType", func(t *testing.T) {

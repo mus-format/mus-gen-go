@@ -1,25 +1,25 @@
 package types
 
-type MyInt int
+type Int int
 
-type MySlice []int
+type Slice []int
 
-type MyGenericSlice[T any] []T
+type GenericSlice[T any] []T
 
-type MyInterface interface {
+type Interface interface {
 	Print()
 }
 
-type DoubleDefinedMyInterface MyInterface
+type DoubleDefinedInterface Interface
 
-type MyStruct struct{}
+type Struct struct{}
 
-type DoubleDefinedMyStruct MyStruct
+type DoubleDefinedStruct Struct
 
-type MyIntPtr *MyInt
+type IntPtr *Int
 
-type MySlicePtr *MySlice
+type SlicePtr *Slice
 
-type MyStructPtr *MyStruct
+type StructPtr *Struct
 
-type MyInterfacePtr *MyInterface
+type InterfacePtr *Interface

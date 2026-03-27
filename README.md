@@ -73,7 +73,7 @@ foo/
 //go:generate go run gen/main.go
 package foo
 
-type MyInt int
+type Int int
 
 type Foo[T any] struct {
   s string
@@ -105,11 +105,11 @@ func main() {
   if err != nil {
     panic(err)
   }
-  err = g.AddDefinedType(reflect.TypeFor[foo.MyInt]())
+  err = g.AddDefinedType(reflect.TypeFor[foo.Int]())
   if err != nil {
     panic(err)
   }
-  err = g.AddStruct(reflect.TypeFor[foo.Foo[foo.MyInt]]())
+  err = g.AddStruct(reflect.TypeFor[foo.Foo[foo.Int]]())
   if err != nil {
     panic(err)
   }
@@ -137,7 +137,7 @@ go generate
 go mod tidy
 ```
 
-Now you can see `mus.gen.go` file in the `foo` folder with `MyIntMUS`
+Now you can see `mus.gen.go` file in the `foo` folder with `IntMUS`
 and `FooMUS` serializers. Let's write some tests. Create a `foo_test.go` file:
 
 ```
@@ -158,9 +158,9 @@ import (
 
 func TestFooSerialization(t *testing.T) {
   var (
-    foo = Foo[MyInt]{
+    foo = Foo[Int]{
       s: "hello world",
-      t: MyInt(5),
+      t: Int(5),
     }
     size = FooMUS.Size(foo)
     bs   = make([]byte, size)
@@ -320,9 +320,9 @@ Supports types defined with the following underlying types:
 For example:
 
 ```go
-type MyInt int
-type MyStringSlice []string
-type MyUintPtr *uint
+type Int int
+type StringSlice []string
+type UintPtr *uint
 // ...
 ```
 
@@ -335,21 +335,21 @@ import (
   tpopts "github.com/mus-format/mus-gen-go/options/type"
 )
 
-type MyInt int // Where int is the underlying type of MyInt.
+type Int int // Where int is the underlying type of Int.
 
 // ...
 
-err := g.AddDefinedType(reflect.TypeFor[MyInt]())
+err := g.AddDefinedType(reflect.TypeFor[Int]())
 ```
 
 Or with serialization options, for example:
 
 ```go
-err := g.AddDefinedType(reflect.TypeFor[MyInt](),
+err := g.AddDefinedType(reflect.TypeFor[Int](),
   tpopts.WithNumEncoding(tpopts.NumEncodingRaw), // The raw.Int serializer will be used
   // to serialize the underlying int type.
-  tpopts.WithValidator("ValidateMyInt")) // After unmarshalling, the MyInt 
-  // value will be validated using the ValidateMyInt function.
+  tpopts.WithValidator("ValidateInt")) // After unmarshalling, the Int 
+  // value will be validated using the ValidateInt function.
   // Validator functions in general should have the following signature:
   //
   //   func(value Type) error
@@ -362,8 +362,8 @@ err := g.AddDefinedType(reflect.TypeFor[MyInt](),
 Supports types defined with the `struct` underlying type, such as:
 
 ```go
-type MyStruct struct { ... }
-type MyAnotherStruct MyStruct
+type Struct struct { ... }
+type AnotherStruct Struct
 ```
 
 It can be used as follows:
@@ -378,17 +378,17 @@ import (
   tpopts "github.com/mus-format/mus-gen-go/options/type"
 )
 
-type MyStruct struct {
+type Struct struct {
   Str string
   Ignore int
   Slice []int
-  // Interface MyInterface  // Interface fields are supported as well.
+  // Interface Interface  // Interface fields are supported as well.
   // Any any                // But not the `any` type.
 }
 
 // ...
 
-err := g.AddStruct(reflect.TypeFor[MyStruct]())
+err := g.AddStruct(reflect.TypeFor[Struct]())
 ```
 
 Or with serialization options, for example:
@@ -397,7 +397,7 @@ Or with serialization options, for example:
 // The number of options should be equal to the number of fields. If you don't
 // want to specify options for some field, use stopts.WithField() without
 // any parameters.
-err := g.AddStruct(reflect.TypeFor[MyStruct](),
+err := g.AddStruct(reflect.TypeFor[Struct](),
   // No options for the first field.
   stopts.WithField(), 
 
@@ -423,9 +423,9 @@ err := g.AddStruct(reflect.TypeFor[MyStruct](),
 A special case for the `time.Time` underlying type:
 
 ```go
-type MyTime time.Time
+type Time time.Time
 // ...
-err = g.AddStruct(reflect.TypeFor[MyTime](),
+err = g.AddStruct(reflect.TypeFor[Time](),
   stopts.WithUnderlyingTime(
     // By default TimeUnitSecUTC is used, but you can change it:
     // stopts.WithUnderlyingTimeTimeUnit(tpopts.TimeUnitMilli),
@@ -445,11 +445,11 @@ import (
   "reflect"
 )
 
-type MyInt int
+type Int int
 
 // ...
 
-t := reflect.TypeFor[MyInt]()
+t := reflect.TypeFor[Int]()
 err := g.AddDefinedType(t)
 // ...
 err = g.AddTyped(t)
@@ -462,9 +462,9 @@ The typed serializer definition will be generated for the specified type.
 Supports types defined with the `interface` underlying type, such as:
 
 ```go
-type MyInterface interface { ... }
-type MyAnyInterface any
-type MyAnotherInterface MyInterface
+type Interface interface { ... }
+type AnyInterface any
+type AnotherInterface Interface
 ```
 
 It can be used as follows:
@@ -480,7 +480,7 @@ const (
   Impl2DTM
 )
 
-type MyInterface interface {...}
+type Interface interface {...}
 type Impl1 struct {...}
 type Impl2 int
 
@@ -501,7 +501,7 @@ err = g.AddDefinedType(t2)
 // ...
 err = g.AddTyped(t2)
 // ...
-err = g.AddInterface(reflect.TypeFor[MyInterface](),
+err = g.AddInterface(reflect.TypeFor[Interface](),
   intropts.WithImplType(t1),
   intropts.WithImplType(t2),
   // intropts.WithMarshaller(), // Enables serialization using the 
@@ -524,13 +524,13 @@ import (
 	intropts "github.com/mus-format/mus-gen-go/options/interface"
 )
 
-type MyInterface interface { ... }
+type Interface interface { ... }
 type Impl1 struct { ... }
 type Impl2 int
 
 // ...
 
-err := g.RegisterInterface(reflect.TypeFor[MyInterface](),
+err := g.RegisterInterface(reflect.TypeFor[Interface](),
   intropts.WithStructImpl(reflect.TypeFor[Impl1]()),
   intropts.WithDefinedTypeImpl(reflect.TypeFor[Impl2]()),
   // intropts.WithRegisterMarshaller() // optional

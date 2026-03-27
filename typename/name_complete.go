@@ -23,8 +23,8 @@ func MustTypeCompleteName(t reflect.Type) (name CompleteName) {
 	return
 }
 
-// TypeCompleteName for types like 'type MyType *int' will return complete name
-// of MyType, not *int.
+// TypeCompleteName for types like 'type Type *int' will return complete name
+// of Type, not *int.
 func TypeCompleteName(t reflect.Type) (name CompleteName, err error) {
 	var stars string
 	if strings.HasPrefix(t.String(), "*") {

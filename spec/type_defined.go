@@ -8,7 +8,7 @@ import (
 
 type DefinedType struct {
 	FullName           typename.FullName
-	UnderlyingTypeName typename.FullName // e.g., 'int' for 'type MyInt int'
+	UnderlyingTypeName typename.FullName // e.g., 'int' for 'type Int int'
 
 	Tops tpopts.Options
 	Gops genopts.Options
