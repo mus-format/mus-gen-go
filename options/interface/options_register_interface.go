@@ -7,20 +7,20 @@ import (
 	tpopts "github.com/mus-format/mus-gen-go/options/type"
 )
 
-// NewRegisterOptions creates a new RegisterOptions.
-func NewRegisterOptions() RegisterOptions {
-	return RegisterOptions{
-		StructImpls:      []StructImpl{},
-		DefinedTypeImpls: []DefinedTypeImpl{},
-	}
-}
-
 // RegisterOptions specifies configuration options for registering interface
 // implementation types.
 type RegisterOptions struct {
 	StructImpls      []StructImpl
 	DefinedTypeImpls []DefinedTypeImpl
 	Marshaller       bool
+}
+
+// NewRegisterOptions creates a new RegisterOptions.
+func NewRegisterOptions() RegisterOptions {
+	return RegisterOptions{
+		StructImpls:      []StructImpl{},
+		DefinedTypeImpls: []DefinedTypeImpl{},
+	}
 }
 
 // StructImpl represents a concrete struct implementation and its options.
