@@ -374,11 +374,9 @@ err := g.AddStruct(reflect.TypeFor[Struct](),
       // The length of the slice field will be validated using the ValidateLength 
       // function before the rest of the slice is unmarshalled.
       tpopts.WithLenValidator("ValidateLength"), 
-      // The raw.Int serializer will be used to serialize slice elements.
-      tpopts.WithNumEncoding(tpopts.NumEncodingRaw), 
       // Each slice element, after unmarshalling, will be validated using the 
       // ValidateSliceElem function.
-      tpopts.WithValidator("ValidateSliceElem"), 
+      tpopts.WithElemValidator("ValidateSliceElem"), 
     ),
   ),
 )
@@ -392,7 +390,7 @@ type Time time.Time
 err = g.AddStruct(reflect.TypeFor[Time](),
   stopts.WithUnderlyingTime(
     // By default TimeUnitSecUTC is used, but you can change it:
-    // stopts.WithUnderlyingTimeTimeUnit(tpopts.TimeUnitMilli),
+    // stopts.WithUnderlyingTimeUnit(tpopts.TimeUnitMilli),
   ),
 )
 ```

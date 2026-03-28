@@ -24,7 +24,7 @@ func TestWithField(t *testing.T) {
 
 func TestWithUnderlyingTime(t *testing.T) {
 	opts := Options{}
-	WithUnderlyingTime(WithUnderlyingTimeTimeUnit(tpopts.TimeUnitSec))(&opts)
+	WithUnderlyingTime(WithUnderlyingTimeUnit(tpopts.TimeUnitSec))(&opts)
 	asserterror.Equal(t, len(opts.UnderlyingTime), 1)
 }
 

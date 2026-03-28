@@ -9,14 +9,14 @@ import (
 
 func TestWithUnderlyingTimeTimeUnit(t *testing.T) {
 	opts := UnderlyingTimeOptions{}
-	WithUnderlyingTimeTimeUnit(tpopts.TimeUnitSec)(&opts)
+	WithUnderlyingTimeUnit(tpopts.TimeUnitSec)(&opts)
 	asserterror.Equal(t, opts.TimeUnit, tpopts.TimeUnitSec)
 }
 
 func TestUnderlyingTimeApply(t *testing.T) {
 	opts := UnderlyingTimeOptions{}
 	UnderlyingTimeApply([]SetUnderlyingTimeOption{
-		WithUnderlyingTimeTimeUnit(tpopts.TimeUnitSec),
+		WithUnderlyingTimeUnit(tpopts.TimeUnitSec),
 		nil,
 	}, &opts)
 	asserterror.Equal(t, opts.TimeUnit, tpopts.TimeUnitSec)

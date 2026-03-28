@@ -12,9 +12,9 @@ type UnderlyingTimeOptions struct {
 // option to an UnderlyingTimeOptions struct.
 type SetUnderlyingTimeOption func(o *UnderlyingTimeOptions)
 
-// WithUnderlyingTimeTimeUnit returns a SetUnderlyingTimeOption that sets the
+// WithUnderlyingTimeUnit returns a SetUnderlyingTimeOption that sets the
 // time unit for the underlying time type.
-func WithUnderlyingTimeTimeUnit(timeUnit tpopts.TimeUnit) SetUnderlyingTimeOption {
+func WithUnderlyingTimeUnit(timeUnit tpopts.TimeUnit) SetUnderlyingTimeOption {
 	return func(o *UnderlyingTimeOptions) {
 		o.TimeUnit = timeUnit
 	}
