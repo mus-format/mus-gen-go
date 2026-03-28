@@ -347,7 +347,7 @@ type Struct struct {
   Ignore int
   Slice []int
   // Interface Interface  // Interface fields are supported as well.
-  // Any any                // But not the `any` type.
+  // Any any              // But not the `any` type.
 }
 
 // ...
