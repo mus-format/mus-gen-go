@@ -138,43 +138,7 @@ go mod tidy
 ```
 
 Now you can see `mus.gen.go` file in the `foo` folder with `IntMUS`
-and `FooMUS` serializers. Let's write some tests. Create a `foo_test.go` file:
-
-```
-foo/
- |‒‒‒...
- |‒‒‒foo_test.go
-```
-
-**foo_test.go**
-
-```go
-package foo
-
-import (
-  "reflect"
-  "testing"
-)
-
-func TestFooSerialization(t *testing.T) {
-  var (
-    foo = Foo[Int]{
-      s: "hello world",
-      t: Int(5),
-    }
-    size = FooMUS.Size(foo)
-    bs   = make([]byte, size)
-  )
-  FooMUS.Marshal(foo, bs)
-  afoo, _, err := FooMUS.Unmarshal(bs)
-  if err != nil {
-    t.Fatal(err)
-  }
-  if !reflect.DeepEqual(foo, afoo) {
-    t.Fatal("something went wrong")
-  }
-}
-```
+and `FooMUS` serializers (see full [example](https://github.com/mus-format/examples-go/tree/main/mus-gen)). 
 
 ## Generator
 
@@ -193,9 +157,9 @@ import (
 )
 
 g, err := musgen.NewGenerator(
-  genopts.WithPkgPath("pkg path"),  // Sets the package path for the generated 
-  // file. The path must match the standard Go package path format (e.g., 
-  // github.com/user/project/pkg) and can be obtained using:
+  genopts.WithPkgPath("pkg path"),  // Sets the package path where the generated 
+  // file will be placed. The path must match the standard Go package path 
+  // format (e.g., github.com/user/project/pkg) and can be obtained using:
   //
   //   pkgPath := reflect.TypeFor[YourType]().PkgPath()
   //
