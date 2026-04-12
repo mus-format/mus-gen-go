@@ -60,9 +60,9 @@ func (s impl2MUS) Skip(bs []byte) (n int, err error) {
 	return ord.String.Skip(bs)
 }
 
-var Impl1TypedMUS = typed.NewTypedSer(Impl1DTM, Impl1MUS)
+var Impl1TypedMUS = typed.NewSer(Impl1DTM, Impl1MUS)
 
-var Impl2TypedMUS = typed.NewTypedSer(Impl2DTM, Impl2MUS)
+var Impl2TypedMUS = typed.NewSer(Impl2DTM, Impl2MUS)
 
 var InterfaceMUS = interfaceMUS{}
 

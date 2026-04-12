@@ -4,4 +4,4 @@
 {{- $serVar := Ser.Var .FullName }}
 {{- $type := Ser.RelName .FullName }}
 
-var {{ $typedSerVar }} = typed.NewTypedSer({{ $dtmVar }}, {{ $serVar }})
+var {{ $typedSerVar }} = typed.NewSer({{ $dtmVar }}, {{ $serVar }})

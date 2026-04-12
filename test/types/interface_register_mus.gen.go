@@ -43,7 +43,7 @@ func (s impl3MUS) Skip(bs []byte) (n int, err error) {
 	return
 }
 
-var Impl3TypedMUS = typed.NewTypedSer(Impl3DTM, Impl3MUS)
+var Impl3TypedMUS = typed.NewSer(Impl3DTM, Impl3MUS)
 
 var Impl4MUS = impl4MUS{}
 
@@ -70,7 +70,7 @@ func (s impl4MUS) Skip(bs []byte) (n int, err error) {
 	return ord.String.Skip(bs)
 }
 
-var Impl4TypedMUS = typed.NewTypedSer(Impl4DTM, Impl4MUS)
+var Impl4TypedMUS = typed.NewSer(Impl4DTM, Impl4MUS)
 
 var InterfaceRegisterMUS = interfaceRegisterMUS{}
 
@@ -158,7 +158,7 @@ func (s impl5MUS) Skip(bs []byte) (n int, err error) {
 	return
 }
 
-var Impl5TypedMUS = typed.NewTypedSer(Impl5DTM, Impl5MUS)
+var Impl5TypedMUS = typed.NewSer(Impl5DTM, Impl5MUS)
 
 var Impl6MUS = impl6MUS{}
 
@@ -185,7 +185,7 @@ func (s impl6MUS) Skip(bs []byte) (n int, err error) {
 	return ord.String.Skip(bs)
 }
 
-var Impl6TypedMUS = typed.NewTypedSer(Impl6DTM, Impl6MUS)
+var Impl6TypedMUS = typed.NewSer(Impl6DTM, Impl6MUS)
 
 var MarshallerInterfaceRegisterMUS = marshallerInterfaceRegisterMUS{}
 

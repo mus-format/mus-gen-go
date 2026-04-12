@@ -32,4 +32,4 @@ func (s typedIntMUS) Skip(bs []byte) (n int, err error) {
 	return varint.Int.Skip(bs)
 }
 
-var TypedIntTypedMUS = typed.NewTypedSer(TypedIntDTM, TypedIntMUS)
+var TypedIntTypedMUS = typed.NewSer(TypedIntDTM, TypedIntMUS)

@@ -1,7 +1,5 @@
 // Package musgen provides a code generator for the MUS binary serialization
 // format.
-//
-//go:generate go run gen/main.go
 package musgen
 
 import (

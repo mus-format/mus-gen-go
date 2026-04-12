@@ -76,7 +76,7 @@ func (s fullInterfaceImplMUS) Skip(r mus.Reader) (n int, err error) {
 	return ord.String.Skip(r)
 }
 
-var FullInterfaceImplTypedMUS = typed.NewTypedSer(FullInterfaceImplDTM, FullInterfaceImplMUS)
+var FullInterfaceImplTypedMUS = typed.NewSer(FullInterfaceImplDTM, FullInterfaceImplMUS)
 
 var FullInterfaceMUS = fullInterfaceMUS{}
 

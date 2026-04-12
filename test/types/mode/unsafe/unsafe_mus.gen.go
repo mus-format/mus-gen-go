@@ -73,7 +73,7 @@ func (s fullInterfaceImplMUS) Skip(bs []byte) (n int, err error) {
 	return unsafe.String.Skip(bs)
 }
 
-var FullInterfaceImplTypedMUS = typed.NewTypedSer(FullInterfaceImplDTM, FullInterfaceImplMUS)
+var FullInterfaceImplTypedMUS = typed.NewSer(FullInterfaceImplDTM, FullInterfaceImplMUS)
 
 var FullInterfaceMUS = fullInterfaceMUS{}
 
