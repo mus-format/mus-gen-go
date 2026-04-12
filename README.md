@@ -1,4 +1,4 @@
-# mus-gen-go
+# mus-gen-go: Code Generator for MUS
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/mus-format/mus-gen-go.svg)](https://pkg.go.dev/github.com/mus-format/mus-gen-go)
 [![GoReportCard](https://goreportcard.com/badge/mus-format/mus-gen-go)](https://goreportcard.com/report/github.com/mus-format/mus-gen-go)
@@ -19,7 +19,7 @@
 
 ## Contents
 
-- [mus-gen-go](#mus-gen-go)
+- [mus-gen-go: Code Generator for MUS](#mus-gen-go-code-generator-for-mus)
   - [Capabilities](#capabilities)
   - [Contents](#contents)
   - [Getting Started Example](#getting-started-example)
