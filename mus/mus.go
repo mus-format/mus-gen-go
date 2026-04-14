@@ -11,10 +11,12 @@ import (
 	"reflect"
 	"text/template"
 
+	"github.com/mus-format/mus-gen-go/classifier"
 	genops "github.com/mus-format/mus-gen-go/options/gen"
 	intropts "github.com/mus-format/mus-gen-go/options/interface"
 	stopts "github.com/mus-format/mus-gen-go/options/struct"
 	tpopts "github.com/mus-format/mus-gen-go/options/type"
+	veropts "github.com/mus-format/mus-gen-go/options/versioned"
 	"github.com/mus-format/mus-gen-go/spec"
 	bldr "github.com/mus-format/mus-gen-go/spec/builder"
 	cnvtr "github.com/mus-format/mus-gen-go/spec/converter"
@@ -141,13 +143,30 @@ func (g *Generator) AddInterface(t reflect.Type, opts ...intropts.SetOption) (
 	return
 }
 
+// AddVersioned adds the specified type to the Generator to produce a
+// versioned serializer for it. This method supports types with the defined
+// source type.
+func (g *Generator) AddVersioned(t reflect.Type, opts ...veropts.SetOption) (
+	err error,
+) {
+	vops := veropts.Options{}
+	if err = veropts.Apply(&vops, opts...); err != nil {
+		return
+	}
+	versionedType, err := g.typeBuilder.BuildVersionedType(t, vops)
+	if err != nil {
+		return
+	}
+	g.fillCrossgen(t, versionedType.FullName)
+	g.genSl = append(g.genSl, fileData{versionedSerTmpl, versionedType})
+	return nil
+}
+
 // RegisterInterface registers an interface type and all of its implementations
 // with the code generator.
 //
 // DTM values are generated automatically, so there is no need to assign them
-// manually.
-//
-// This helper method is equivalent to calling, in order:
+// manually. This helper method is equivalent to calling, in order:
 //
 //	AddStruct/AddDefinedType → AddTyped → AddInterface
 func (g *Generator) RegisterInterface(t reflect.Type,
@@ -188,6 +207,42 @@ func (g *Generator) RegisterInterface(t reflect.Type,
 	}
 	g.addDTM(types)
 	return g.AddInterface(t, iops...)
+}
+
+// RegisterVersioned register a type and all its type versions with the code
+// generator.
+//
+// DTM values are generated automatically, so there is no need to assign them
+// manually. This helper method is equivalent to calling, in order:
+//
+//	AddStruct/AddDefinedType → AddTyped → AddVersioned
+func (g *Generator) RegisterVersioned(t reflect.Type,
+	opts ...veropts.SetOption,
+) (err error) {
+	vops := veropts.Options{}
+	if err = veropts.Apply(&vops, opts...); err != nil {
+		return
+	}
+	var (
+		types = make([]string, 0, len(vops.Versions))
+	)
+	for _, version := range vops.Versions {
+		if classifier.DefinedStruct(version.Type) {
+			err = g.AddStruct(version.Type)
+		} else {
+			err = g.AddDefinedType(version.Type)
+		}
+		if err != nil {
+			return
+		}
+		err = g.AddTyped(version.Type)
+		if err != nil {
+			return
+		}
+		types = append(types, version.Type.Name())
+	}
+	g.addDTM(types)
+	return g.AddVersioned(t, opts...)
 }
 
 func (g *Generator) addDTM(types []string) {

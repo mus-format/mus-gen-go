@@ -1,0 +1,11 @@
+{{/* spec.VersionedType */}}
+{{- $mlp := Tmpl.MarshalLastParam true .Gops }}
+{{- $val := Ser.Val . }}
+{{- $curr := "" }}
+{{- range $i, $e := .Versions }}
+    {{- $vopt := index $.Vops.Versions $i }}
+    {{- if eq $vopt.Migration "" }}
+        {{- $curr = $e }}
+    {{- end }}
+{{- end }}
+return {{ Ser.TypedVar $curr }}.Marshal({{ Ser.RelName $curr }}({{ $val }}), {{ $mlp }})

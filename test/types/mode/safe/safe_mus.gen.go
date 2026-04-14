@@ -18,6 +18,11 @@ const (
 	FullInterfaceImplDTM com.DTM = iota + 1
 )
 
+const (
+	FooV1DTM com.DTM = iota + 1
+	FooV2DTM
+)
+
 var (
 	arraykhqoj8H1iZDaFGbnRRNCSQΞΞ = unsafe.NewArraySer[[10]int](varint.Int)
 	mapHfQsz6AeCIBt4MICw0pP6QΞΞ   = ord.NewMapSer(ord.String, varint.Int)
@@ -133,6 +138,117 @@ func (s fullInterfaceMUS) Skip(bs []byte) (n int, err error) {
 	return
 }
 
+var FooV1MUS = fooV1MUS{}
+
+type fooV1MUS struct{}
+
+func (s fooV1MUS) Marshal(v mode.FooV1, bs []byte) (n int) {
+	return varint.Int.Marshal(v.Num, bs)
+}
+
+func (s fooV1MUS) Unmarshal(bs []byte) (v mode.FooV1, n int, err error) {
+	v.Num, n, err = varint.Int.Unmarshal(bs)
+	return
+}
+
+func (s fooV1MUS) Size(v mode.FooV1) (size int) {
+	return varint.Int.Size(v.Num)
+}
+
+func (s fooV1MUS) Skip(bs []byte) (n int, err error) {
+	n, err = varint.Int.Skip(bs)
+	return
+}
+
+var FooV1TypedMUS = typed.NewSer(FooV1DTM, FooV1MUS)
+
+var FooV2MUS = fooV2MUS{}
+
+type fooV2MUS struct{}
+
+func (s fooV2MUS) Marshal(v mode.FooV2, bs []byte) (n int) {
+	return ord.String.Marshal(string(v), bs)
+}
+
+func (s fooV2MUS) Unmarshal(bs []byte) (v mode.FooV2, n int, err error) {
+	tmp, n, err := ord.String.Unmarshal(bs)
+	if err != nil {
+		return
+	}
+	v = mode.FooV2(tmp)
+	return
+}
+
+func (s fooV2MUS) Size(v mode.FooV2) (size int) {
+	return ord.String.Size(string(v))
+}
+
+func (s fooV2MUS) Skip(bs []byte) (n int, err error) {
+	return ord.String.Skip(bs)
+}
+
+var FooV2TypedMUS = typed.NewSer(FooV2DTM, FooV2MUS)
+
+var VersionedMUS = versionedMUS{}
+
+type versionedMUS struct{}
+
+func (s versionedMUS) Marshal(v mode.Versioned, bs []byte) (n int) {
+	return FooV2TypedMUS.Marshal(mode.FooV2(v), bs)
+}
+
+func (s versionedMUS) Unmarshal(bs []byte) (v mode.Versioned, n int, err error) {
+	dtm, n, err := typed.DTMSer.Unmarshal(bs)
+	if err != nil {
+		return
+	}
+	var n1 int
+	switch dtm {
+	case FooV1DTM:
+		var tmp mode.FooV1
+		tmp, n1, err = FooV1TypedMUS.UnmarshalData(bs[n:])
+		if err != nil {
+			return
+		}
+		v = mode.MigrateFooV1(tmp)
+	case FooV2DTM:
+		var tmp mode.FooV2
+		tmp, n1, err = FooV2TypedMUS.UnmarshalData(bs[n:])
+		if err != nil {
+			return
+		}
+		v = mode.Versioned(tmp)
+	default:
+		err = com.NewUnexpectedDTMError(dtm)
+		return
+	}
+	n += n1
+	return
+}
+
+func (s versionedMUS) Size(v mode.Versioned) (size int) {
+	return FooV2TypedMUS.Size(mode.FooV2(v))
+}
+
+func (s versionedMUS) Skip(bs []byte) (n int, err error) {
+	dtm, n, err := typed.DTMSer.Unmarshal(bs)
+	if err != nil {
+		return
+	}
+	var n1 int
+	switch dtm {
+	case FooV1DTM:
+		n1, err = FooV1TypedMUS.SkipData(bs[n:])
+	case FooV2DTM:
+		n1, err = FooV2TypedMUS.SkipData(bs[n:])
+	default:
+		err = com.NewUnexpectedDTMError(dtm)
+		return
+	}
+	n += n1
+	return
+}
+
 var FullStructMUS = fullStructMUS{}
 
 type fullStructMUS struct{}
@@ -161,7 +277,8 @@ func (s fullStructMUS) Marshal(v mode.FullStruct, bs []byte) (n int) {
 	n += slicea9b54NTckjaAZ77kX9CsBAΞΞ.Marshal(v.SliceInt, bs[n:])
 	n += mapHfQsz6AeCIBt4MICw0pP6QΞΞ.Marshal(v.MapStrInt, bs[n:])
 	n += FullDefinedMUS.Marshal(v.Defined, bs[n:])
-	return n + FullInterfaceMUS.Marshal(v.Interface, bs[n:])
+	n += FullInterfaceMUS.Marshal(v.Interface, bs[n:])
+	return n + VersionedMUS.Marshal(v.Versioned, bs[n:])
 }
 
 func (s fullStructMUS) Unmarshal(bs []byte) (v mode.FullStruct, n int, err error) {
@@ -282,6 +399,11 @@ func (s fullStructMUS) Unmarshal(bs []byte) (v mode.FullStruct, n int, err error
 	}
 	v.Interface, n1, err = FullInterfaceMUS.Unmarshal(bs[n:])
 	n += n1
+	if err != nil {
+		return
+	}
+	v.Versioned, n1, err = VersionedMUS.Unmarshal(bs[n:])
+	n += n1
 	return
 }
 
@@ -309,7 +431,8 @@ func (s fullStructMUS) Size(v mode.FullStruct) (size int) {
 	size += slicea9b54NTckjaAZ77kX9CsBAΞΞ.Size(v.SliceInt)
 	size += mapHfQsz6AeCIBt4MICw0pP6QΞΞ.Size(v.MapStrInt)
 	size += FullDefinedMUS.Size(v.Defined)
-	return size + FullInterfaceMUS.Size(v.Interface)
+	size += FullInterfaceMUS.Size(v.Interface)
+	return size + VersionedMUS.Size(v.Versioned)
 }
 
 func (s fullStructMUS) Skip(bs []byte) (n int, err error) {
@@ -429,6 +552,11 @@ func (s fullStructMUS) Skip(bs []byte) (n int, err error) {
 		return
 	}
 	n1, err = FullInterfaceMUS.Skip(bs[n:])
+	n += n1
+	if err != nil {
+		return
+	}
+	n1, err = VersionedMUS.Skip(bs[n:])
 	n += n1
 	return
 }

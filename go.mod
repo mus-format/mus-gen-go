@@ -6,8 +6,8 @@ toolchain go1.24.1
 
 require (
 	github.com/mus-format/common-go v0.0.0-20260324174526-3d8f1741b5a2
-	github.com/mus-format/mus-go v0.10.0
-	github.com/mus-format/mus-stream-go v0.10.0
+	github.com/mus-format/mus-go v0.10.1
+	github.com/mus-format/mus-stream-go v0.10.1
 	github.com/ymz-ncnk/assert v0.0.0-20260108210721-155bc9aa4282
 	github.com/ymz-ncnk/mok v0.2.2
 	golang.org/x/mod v0.33.0

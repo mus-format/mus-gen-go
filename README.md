@@ -12,7 +12,8 @@
   optimizations.
 - Supports both in-memory (`mus-go`) and streaming (`mus-stream-go`) data 
   processing models.
-- Can generate code for parameterized types and interfaces.
+- Can generate code for parameterized types, interfaces and types with multiple 
+  versions.
 - Provides multi-package support.
 - Enables cross-package code generation.
 - Can be extended to support additional binary serialization formats beyond MUS.
@@ -39,6 +40,8 @@
       - [AddTyped()](#addtyped)
       - [AddInterface()](#addinterface)
       - [RegisterInterface()](#registerinterface)
+      - [AddVersioned()](#addversioned)
+      - [RegisterVersioned()](#registerversioned)
   - [Multi-package support](#multi-package-support)
   - [Cross-Package Code Generation](#cross-package-code-generation)
   - [Serialization Options](#serialization-options)
@@ -64,8 +67,7 @@ folder with the following structure:
 foo/
  |‒‒‒gen/
  |    |‒‒‒main.go
- |‒‒‒foo.go
-```
+ |‒‒‒foo.g
 
 **foo.go**
 
@@ -287,21 +289,14 @@ For example:
 type Int int
 type StringSlice []string
 type UintPtr *uint
-// ...
 ```
 
 It can be used as follows:
 
 ```go
-import (
-  "reflect"
-
-  tpopts "github.com/mus-format/mus-gen-go/options/type"
-)
+import tpopts "github.com/mus-format/mus-gen-go/options/type"
 
 type Int int // Where int is the underlying type of Int.
-
-// ...
 
 err := g.AddDefinedType(reflect.TypeFor[Int]())
 ```
@@ -386,7 +381,7 @@ A special case for the `time.Time` underlying type:
 
 ```go
 type Time time.Time
-// ...
+
 err = g.AddStruct(reflect.TypeFor[Time](),
   stopts.WithUnderlyingTime(
     // By default TimeUnitSecUTC is used, but you can change it:
@@ -408,8 +403,6 @@ import (
 )
 
 type Int int
-
-// ...
 
 t := reflect.TypeFor[Int]()
 err := g.AddDefinedType(t)
@@ -437,6 +430,7 @@ import (
 	intropts "github.com/mus-format/mus-gen-go/options/interface"
 )
 
+// 1. Define DTM values for each implementation type.
 const (
   Impl1DTM com.DTM = iota + 1
   Impl2DTM
@@ -446,23 +440,24 @@ type Interface interface {...}
 type Impl1 struct {...}
 type Impl2 int
 
-// ...
-
 var (
   t1 = reflect.TypeFor[Impl1]()
   t2 = reflect.TypeFor[Impl2]()
 )
 
-// ...
-
+// 2. Add interface implementations.
 err := g.AddStruct(t1)
-// ...
-err = g.AddTyped(t1)
 // ...
 err = g.AddDefinedType(t2)
 // ...
+
+// 3. Add typed serializers for each implementation type.
+err = g.AddTyped(t1)
+// ...
 err = g.AddTyped(t2)
 // ...
+
+// 4. Add interface with implementations.
 err = g.AddInterface(reflect.TypeFor[Interface](),
   intropts.WithImplType(t1),
   intropts.WithImplType(t2),
@@ -499,6 +494,81 @@ err := g.RegisterInterface(reflect.TypeFor[Interface](),
 )
 ```
 
+#### AddVersioned()
+
+Produce a versioned serializer for the specified type.
+
+```go
+import (
+  com "github.com/mus-format/common-go"
+  veropts "github.com/mus-format/mus-gen-go/options/versioned"
+)
+
+// 1. Define DTM values for each type version.
+const (
+  FooV1DTM com.DTM = iota + 1
+  FooV2DTM
+)
+
+type Foo FooV2    // target type Foo
+type FooV2 string // current type version
+type FooV1 int    // old type version
+
+var (
+  t1 = reflect.TypeFor[FooV1]()
+  t2 = reflect.TypeFor[FooV2]()
+)
+
+// 2. Add type versions.
+err := g.AddDefinedType(t1)
+// ...
+err = g.AddDefinedType(t2)
+// ...
+
+// 3. Add typed serializers for each version.
+err = g.AddTyped(t1)
+// ...
+err = g.AddTyped(t2)
+// ...
+
+// 4. Add target type with versions.
+err = g.AddVersioned(reflect.TypeFor[Foo](),
+  veropts.WithVersion(t1, "MigrateFooV1"),
+  veropts.WithCurrentVersion(t2), // Do not need migrate function.
+)
+```
+
+The migration function must accept an old type version and return the target type:
+
+```go
+func MigrateFooV1(v FooV1) Foo { ... }
+```
+
+#### RegisterVersioned()
+
+A convenience method that performs the full registration flow for a specified
+type and all of its versions.
+
+Unlike `AddVersioned`, `RegisterVersioned` does not require you to define DTM
+values or call `AddStruct`/`AddDefinedType`, `AddTyped` for each type version
+manually:
+
+```go
+import (
+  "reflect"
+  veropts "github.com/mus-format/mus-gen-go/options/versioned"
+)
+
+type Foo FooV2    // target type Foo
+type FooV2 string // current type version
+type FooV1 int    // old type version
+
+err := g.RegisterVersioned(reflect.TypeFor[Foo](),
+  veropts.WithVersion(reflect.TypeFor[FooV1](), "MigrateFooV1"),
+  veropts.WithCurrentVersion(reflect.TypeFor[FooV2]()),
+)
+```
+
 ## Multi-package support
 
 By default, `mus-gen` expects a type’s serializer to reside in the same package
@@ -517,14 +587,10 @@ will result in:
 ```go
 package foo
 
-// ...
-
 func (s fooMUS) Marshal(v Foo, bs []byte) (n int) {
   return bar.BarMUS(v.Bar) // mus-gen assumes the Bar serializer is located
   // in the bar package and follows the default naming convention.
 }
-
-// ...
 ```
 
 To reference a `Bar` serializer defined in a different package or with a
@@ -548,13 +614,9 @@ The string `another.AwesomeBar` will be used as-is, with the serialization
 format appended:
 
 ```go
-// ...
-
 func (s fooMUS) Marshal(v Foo, bs []byte) (n int) {
   return another.AwesomeBarMUS(v.Bar)
 }
-
-// ...
 ```
 
 ## Cross-Package Code Generation

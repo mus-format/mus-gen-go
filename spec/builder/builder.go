@@ -10,6 +10,7 @@ import (
 	stopts "github.com/mus-format/mus-gen-go/options/struct"
 	structops "github.com/mus-format/mus-gen-go/options/struct"
 	tpopts "github.com/mus-format/mus-gen-go/options/type"
+	veropts "github.com/mus-format/mus-gen-go/options/versioned"
 	"github.com/mus-format/mus-gen-go/scanner"
 	scnr "github.com/mus-format/mus-gen-go/scanner"
 	"github.com/mus-format/mus-gen-go/spec"
@@ -91,6 +92,24 @@ func (b TypeBuilder) BuildInterfaceType(t reflect.Type, iops intropts.Options) (
 	interfaceType.Impls = impls
 	interfaceType.Iops = iops
 	interfaceType.Gops = b.gops
+	return
+}
+
+func (b TypeBuilder) BuildVersionedType(t reflect.Type, vops veropts.Options) (
+	versionedType spec.VersionedType, err error,
+) {
+	if !classifier.DefinedType(t) {
+		err = b.notInterfaceError(t)
+		return
+	}
+	var (
+		typeName = b.parseTypeName(t)
+		versions = b.parseVersions(vops)
+	)
+	versionedType.FullName = typeName
+	versionedType.Versions = versions
+	versionedType.Vops = vops
+	versionedType.Gops = b.gops
 	return
 }
 
@@ -194,6 +213,14 @@ func (b TypeBuilder) parseImpls(iops intropts.Options) []typename.FullName {
 		impls[i] = b.parseTypeName(impl)
 	}
 	return impls
+}
+
+func (b TypeBuilder) parseVersions(vops veropts.Options) []typename.FullName {
+	versions := make([]typename.FullName, len(vops.Versions))
+	for i, version := range vops.Versions {
+		versions[i] = b.parseTypeName(version.Type)
+	}
+	return versions
 }
 
 func (b TypeBuilder) notDefinedTypeError(t reflect.Type) error {

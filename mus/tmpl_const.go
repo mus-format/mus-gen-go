@@ -5,6 +5,7 @@ const (
 	structSerTmpl       = "ser_struct.tmpl"
 	typedSerTmpl        = "ser_typed.tmpl"
 	interfaceSerTmpl    = "ser_interface.tmpl"
+	versionedSerTmpl    = "ser_versioned.tmpl"
 	packageTmpl         = "package.tmpl"
 	importsTmpl         = "imports.tmpl"
 	anonDefinitionsTmpl = "anon_definitions.tmpl"

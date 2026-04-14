@@ -84,6 +84,28 @@ func TestGenerated_InterfaceRegister(t *testing.T) {
 	test.Test([]types.MarshallerInterfaceRegister{types.Impl5{Num: 1}, types.Impl6("str")}, types.MarshallerInterfaceRegisterMUS, t)
 }
 
+func TestGenerated_Versioned(t *testing.T) {
+	test.TestVersioned(t, types.VersionedMUS,
+		test.Version(types.Ver1(11), types.Ver1TypedMUS, types.Versioned("11")),
+		test.Version(types.Ver2("str"), types.Ver2TypedMUS, types.Versioned("str")),
+	)
+	test.TestVersionedSkip(t, types.VersionedMUS,
+		test.VersionSkip[types.Ver1, types.Versioned](types.Ver1(11), types.Ver1TypedMUS),
+		test.VersionSkip[types.Ver2, types.Versioned](types.Ver2("str"), types.Ver2TypedMUS),
+	)
+}
+
+func TestGenerated_VersionedRegister(t *testing.T) {
+	test.TestVersioned(t, types.VersionedRegisterMUS,
+		test.Version(types.Ver3(11), types.Ver3TypedMUS, types.VersionedRegister("11")),
+		test.Version(types.Ver4("str"), types.Ver4TypedMUS, types.VersionedRegister("str")),
+	)
+	test.TestVersionedSkip(t, types.VersionedRegisterMUS,
+		test.VersionSkip[types.Ver3, types.VersionedRegister](types.Ver3(11), types.Ver3TypedMUS),
+		test.VersionSkip[types.Ver4, types.VersionedRegister](types.Ver4("str"), types.Ver4TypedMUS),
+	)
+}
+
 func TestGenerated_Typed(t *testing.T) {
 	test.Test([]types.TypedInt{1}, types.TypedIntMUS, t)
 }
@@ -181,6 +203,7 @@ var (
 		MapStrInt:  map[string]int{"str": 14},
 		Defined:    mode.FullDefined(15),
 		Interface:  mode.FullInterfaceImpl("str"),
+		Versioned:  mode.Versioned("current version"),
 	}
 	sl         = []int{1, 2}
 	complexMap = types.ComplexMap{

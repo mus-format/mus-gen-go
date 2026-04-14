@@ -8,6 +8,7 @@ import (
 	musgen "github.com/mus-format/mus-gen-go/mus"
 	genops "github.com/mus-format/mus-gen-go/options/gen"
 	intropts "github.com/mus-format/mus-gen-go/options/interface"
+	veropts "github.com/mus-format/mus-gen-go/options/versioned"
 	types "github.com/mus-format/mus-gen-go/test/types/mode"
 	assertfatal "github.com/ymz-ncnk/assert/fatal"
 )
@@ -23,6 +24,11 @@ func TestGenerateMode_Safe(t *testing.T) {
 	assertfatal.EqualError(t, err, nil)
 	err = g.RegisterInterface(reflect.TypeFor[types.FullInterface](),
 		intropts.WithDefinedTypeImpl(reflect.TypeFor[types.FullInterfaceImpl]()),
+	)
+	assertfatal.EqualError(t, err, nil)
+	err = g.RegisterVersioned(reflect.TypeFor[types.Versioned](),
+		veropts.WithVersion(reflect.TypeFor[types.FooV1](), "mode.MigrateFooV1"),
+		veropts.WithCurrentVersion(reflect.TypeFor[types.FooV2]()),
 	)
 	assertfatal.EqualError(t, err, nil)
 	err = g.AddStruct(reflect.TypeFor[types.FullStruct]())
@@ -47,6 +53,11 @@ func TestGenerateMode_Unsafe(t *testing.T) {
 		intropts.WithDefinedTypeImpl(reflect.TypeFor[types.FullInterfaceImpl]()),
 	)
 	assertfatal.EqualError(t, err, nil)
+	err = g.RegisterVersioned(reflect.TypeFor[types.Versioned](),
+		veropts.WithVersion(reflect.TypeFor[types.FooV1](), "mode.MigrateFooV1"),
+		veropts.WithCurrentVersion(reflect.TypeFor[types.FooV2]()),
+	)
+	assertfatal.EqualError(t, err, nil)
 	err = g.AddStruct(reflect.TypeFor[types.FullStruct]())
 	assertfatal.EqualError(t, err, nil)
 	bs, err := g.Generate()
@@ -69,6 +80,11 @@ func TestGenerateMode_NotUnsafe(t *testing.T) {
 		intropts.WithDefinedTypeImpl(reflect.TypeFor[types.FullInterfaceImpl]()),
 	)
 	assertfatal.EqualError(t, err, nil)
+	err = g.RegisterVersioned(reflect.TypeFor[types.Versioned](),
+		veropts.WithVersion(reflect.TypeFor[types.FooV1](), "mode.MigrateFooV1"),
+		veropts.WithCurrentVersion(reflect.TypeFor[types.FooV2]()),
+	)
+	assertfatal.EqualError(t, err, nil)
 	err = g.AddStruct(reflect.TypeFor[types.FullStruct]())
 	assertfatal.EqualError(t, err, nil)
 	bs, err := g.Generate()
@@ -89,6 +105,11 @@ func TestGenerateMode_StreamSafe(t *testing.T) {
 	assertfatal.EqualError(t, err, nil)
 	err = g.RegisterInterface(reflect.TypeFor[types.FullInterface](),
 		intropts.WithDefinedTypeImpl(reflect.TypeFor[types.FullInterfaceImpl]()),
+	)
+	assertfatal.EqualError(t, err, nil)
+	err = g.RegisterVersioned(reflect.TypeFor[types.Versioned](),
+		veropts.WithVersion(reflect.TypeFor[types.FooV1](), "mode.MigrateFooV1"),
+		veropts.WithCurrentVersion(reflect.TypeFor[types.FooV2]()),
 	)
 	assertfatal.EqualError(t, err, nil)
 	err = g.AddStruct(reflect.TypeFor[types.FullStruct]())
@@ -115,6 +136,11 @@ func TestGenerateMode_StreamUnsafe(t *testing.T) {
 		intropts.WithDefinedTypeImpl(reflect.TypeFor[types.FullInterfaceImpl]()),
 	)
 	assertfatal.EqualError(t, err, nil)
+	err = g.RegisterVersioned(reflect.TypeFor[types.Versioned](),
+		veropts.WithVersion(reflect.TypeFor[types.FooV1](), "mode.MigrateFooV1"),
+		veropts.WithCurrentVersion(reflect.TypeFor[types.FooV2]()),
+	)
+	assertfatal.EqualError(t, err, nil)
 	err = g.AddStruct(reflect.TypeFor[types.FullStruct]())
 	assertfatal.EqualError(t, err, nil)
 	bs, err := g.Generate()
@@ -137,6 +163,11 @@ func TestGenerateMode_StreamNotUnsafe(t *testing.T) {
 	assertfatal.EqualError(t, err, nil)
 	err = g.RegisterInterface(reflect.TypeFor[types.FullInterface](),
 		intropts.WithDefinedTypeImpl(reflect.TypeFor[types.FullInterfaceImpl]()),
+	)
+	assertfatal.EqualError(t, err, nil)
+	err = g.RegisterVersioned(reflect.TypeFor[types.Versioned](),
+		veropts.WithVersion(reflect.TypeFor[types.FooV1](), "mode.MigrateFooV1"),
+		veropts.WithCurrentVersion(reflect.TypeFor[types.FooV2]()),
 	)
 	assertfatal.EqualError(t, err, nil)
 	err = g.AddStruct(reflect.TypeFor[types.FullStruct]())

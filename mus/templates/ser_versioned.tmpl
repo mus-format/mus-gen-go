@@ -1,0 +1,27 @@
+{{/* spec.VersionedType */}}
+{{- $serVar := Ser.Var .FullName }}
+{{- $serType := Ser.Type .FullName }}
+{{- $v := Ser.Val . }}
+{{- $type := Ser.RelName .FullName }}
+{{- $mslp := Tmpl.MarshalSignatureLastParam .Gops }}
+{{- $uslp := Tmpl.UnmarshalSignatureLastParam .Gops }}
+
+var {{ $serVar }} = {{ $serType }}{}
+
+type {{ $serType }} struct{}
+
+func (s {{ $serType }}) Marshal({{ $v }} {{ $type }}, {{ $mslp }}) (n int {{ if .Gops.Stream }} , err error {{ end }}) {
+	{{- Tmpl.Include "versioned_marshal.tmpl" . -}}
+}
+
+func (s {{ $serType }}) Unmarshal({{ $uslp }}) ({{ $v }} {{ $type }}, n int, err error) {
+	{{- Tmpl.Include "versioned_unmarshal.tmpl" . -}}
+}
+
+func (s {{ $serType }}) Size({{ $v }} {{ $type }}) (size int) {
+	{{- Tmpl.Include "versioned_size.tmpl" . -}}
+}
+
+func (s {{ $serType }}) Skip({{ $uslp }}) (n int, err error) {
+	{{- Tmpl.Include "versioned_skip.tmpl" . -}}
+}

@@ -1,6 +1,9 @@
 package mode
 
-import "time"
+import (
+	"strconv"
+	"time"
+)
 
 type FullStruct struct {
 	Int        int
@@ -39,6 +42,9 @@ type FullStruct struct {
 
 	// Interface
 	Interface FullInterface
+
+	// Versioned
+	Versioned Versioned
 }
 
 type FullDefined int
@@ -46,3 +52,15 @@ type FullDefined int
 type FullInterface any
 
 type FullInterfaceImpl string
+
+type Versioned FooV2
+
+type FooV2 string
+
+type FooV1 struct {
+	Num int
+}
+
+func MigrateFooV1(v FooV1) Versioned {
+	return Versioned(strconv.Itoa(v.Num))
+}
