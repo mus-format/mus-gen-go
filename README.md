@@ -511,8 +511,8 @@ const (
 )
 
 type Foo FooV2    // target type Foo
-type FooV2 string // current type version
-type FooV1 int    // old type version
+type FooV2 string // current version
+type FooV1 int    // previous version
 
 var (
   t1 = reflect.TypeFor[FooV1]()
@@ -534,11 +534,10 @@ err = g.AddTyped(t2)
 // 4. Add target type with versions.
 err = g.AddVersioned(reflect.TypeFor[Foo](),
   veropts.WithVersion(t1, "MigrateFooV1"),
-  veropts.WithCurrentVersion(t2), // Do not need migrate function.
+  veropts.WithCurrentVersion(t2), // No migration function required.
 )
 ```
-
-The migration function must accept an old type version and return the target type:
+The migration function must accept a previous type version and return the target type:
 
 ```go
 func MigrateFooV1(v FooV1) Foo { ... }
@@ -560,8 +559,8 @@ import (
 )
 
 type Foo FooV2    // target type Foo
-type FooV2 string // current type version
-type FooV1 int    // old type version
+type FooV2 string // current version
+type FooV1 int    // previous version
 
 err := g.RegisterVersioned(reflect.TypeFor[Foo](),
   veropts.WithVersion(reflect.TypeFor[FooV1](), "MigrateFooV1"),

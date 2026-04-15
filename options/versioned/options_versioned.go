@@ -35,17 +35,17 @@ type Version struct {
 // Options struct.
 type SetOption func(o *Options)
 
-// WithVersion returns a SetOption that adds an old type version with the
-// specified migration function to the Options struct.
+// WithVersion returns a SetOption that adds a previous type version and its
+// migration function to the Options.
 //
-// The migration param must be a function name that accepts a type version and
-// returns the target type.
+// The migration parameter must be the name of a function that transforms the
+// previous version into the target type.
 //
 // For example:
 //
 //	type Foo FooV2  // target type Foo
-//	type FooV2        // current type version
-//	type FooV1        // old type version
+//	type FooV2      // current version
+//	type FooV1      // previous version
 //
 //	func MigrateFooV1(v FooV1) Foo { ... }
 func WithVersion(t reflect.Type, migration string) SetOption {
@@ -58,12 +58,12 @@ func WithVersion(t reflect.Type, migration string) SetOption {
 }
 
 // WithCurrentVersion returns a SetOption that adds the current type version to
-// the Options struct.
+// the Options.
 //
 // For example:
 //
 //	type Foo FooV2 // target type Foo
-//	type FooV2       // current type version
+//	type FooV2     // current version
 func WithCurrentVersion(t reflect.Type) SetOption {
 	return func(o *Options) {
 		o.Versions = append(o.Versions, Version{
