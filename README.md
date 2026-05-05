@@ -1,4 +1,4 @@
-# mus-gen-go: Code Generator for MUS
+# mus-gen: Code Generator for MUS
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/mus-format/mus-gen-go.svg)](https://pkg.go.dev/github.com/mus-format/mus-gen-go)
 [![GoReportCard](https://goreportcard.com/badge/mus-format/mus-gen-go)](https://goreportcard.com/report/github.com/mus-format/mus-gen-go)
@@ -10,7 +10,7 @@
 
 - Generates high-performance serialization code with optional unsafe
   optimizations.
-- Supports both in-memory (`mus-go`) and streaming (`mus-stream-go`) data 
+- Supports both in-memory (`mus`) and streaming (`mus-stream`) data 
   processing models.
 - Can generate code for parameterized types, interfaces and types with multiple 
   versions.
@@ -20,7 +20,7 @@
 
 ## Contents
 
-- [mus-gen-go: Code Generator for MUS](#mus-gen-go-code-generator-for-mus)
+- [mus-gen: Code Generator for MUS](#mus-gen-code-generator-for-mus)
   - [Capabilities](#capabilities)
   - [Contents](#contents)
   - [Getting Started Example](#getting-started-example)
