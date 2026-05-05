@@ -205,6 +205,9 @@ func (g *Generator) RegisterInterface(t reflect.Type,
 		iops = append(iops, intropts.WithImpl(impl.Type))
 		types = append(types, impl.Type.Name())
 	}
+	if rops.Marshaller {
+		iops = append(iops, intropts.WithMarshaller())
+	}
 	g.addDTM(types)
 	return g.AddInterface(t, iops...)
 }

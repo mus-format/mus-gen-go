@@ -4,8 +4,10 @@ package types
 
 import (
 	"fmt"
+	"reflect"
 
 	com "github.com/mus-format/common-go"
+	"github.com/mus-format/mus-go"
 	"github.com/mus-format/mus-go/ord"
 	"github.com/mus-format/mus-go/typed"
 	"github.com/mus-format/mus-go/varint"
@@ -192,14 +194,10 @@ var MarshallerInterfaceRegisterMUS = marshallerInterfaceRegisterMUS{}
 type marshallerInterfaceRegisterMUS struct{}
 
 func (s marshallerInterfaceRegisterMUS) Marshal(v MarshallerInterfaceRegister, bs []byte) (n int) {
-	switch t := v.(type) {
-	case Impl5:
-		return Impl5TypedMUS.Marshal(t, bs)
-	case Impl6:
-		return Impl6TypedMUS.Marshal(t, bs)
-	default:
-		panic(fmt.Sprintf(com.ErrorPrefix+"unexpected %v type", t))
+	if m, ok := v.(mus.MarshallerTyped); ok {
+		return m.MarshalTypedMUS(bs)
 	}
+	panic(fmt.Sprintf("%v doesn't implement the mus.MarshallerTyped interface", reflect.TypeOf(v)))
 }
 
 func (s marshallerInterfaceRegisterMUS) Unmarshal(bs []byte) (v MarshallerInterfaceRegister, n int, err error) {
@@ -222,14 +220,10 @@ func (s marshallerInterfaceRegisterMUS) Unmarshal(bs []byte) (v MarshallerInterf
 }
 
 func (s marshallerInterfaceRegisterMUS) Size(v MarshallerInterfaceRegister) (size int) {
-	switch t := v.(type) {
-	case Impl5:
-		return Impl5TypedMUS.Size(t)
-	case Impl6:
-		return Impl6TypedMUS.Size(t)
-	default:
-		panic(fmt.Sprintf(com.ErrorPrefix+"unexpected %v type", t))
+	if m, ok := v.(mus.MarshallerTyped); ok {
+		return m.SizeTypedMUS()
 	}
+	panic(fmt.Sprintf("%v doesn't implement the mus.MarshallerTyped interface", reflect.TypeOf(v)))
 }
 
 func (s marshallerInterfaceRegisterMUS) Skip(bs []byte) (n int, err error) {
