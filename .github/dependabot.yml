@@ -15,3 +15,8 @@ updates:
       prefix: "chore"
     labels:
       - "dependencies"
+    ignore:
+      - dependency-name: "golang.org/x/mod"
+        versions: ["> 0.33.0"]
+      - dependency-name: "golang.org/x/tools"
+        versions: ["> 0.41.0"]
