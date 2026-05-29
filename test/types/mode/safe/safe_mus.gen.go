@@ -26,7 +26,7 @@ const (
 var (
 	arraykhqoj8H1iZDaFGbnRRNCSQΞΞ = unsafe.NewArraySer[[10]int](varint.Int)
 	mapHfQsz6AeCIBt4MICw0pP6QΞΞ   = ord.NewMapSer(ord.String, varint.Int)
-	ptrceΔUj8v42zbVCknwTKfRXwΞΞ   = ord.NewPtrSer(varint.Int)
+	ptrceΔUj8v42zbVCknwTKfRXwΞΞ   = ord.NewPtrSer[int](varint.Int)
 	slicea9b54NTckjaAZ77kX9CsBAΞΞ = ord.NewSliceSer(varint.Int)
 )
 

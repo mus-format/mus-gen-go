@@ -23,8 +23,9 @@ var (
 	mapHfQsz6AeCIBt4MICw0pP6QΞΞ    = ord.NewMapSer(ord.String, varint.Int)
 	mapq2eFIqbCNvksgCaR1ΔhΔpwΞΞ    = ord.NewValidMapSer(ord.String, varint.Int, mapopts.WithLenValidator[string, int](com.ValidatorFn[int](ValidateLen)), mapopts.WithKeyValidator[string, int](com.ValidatorFn[string](ValidateStr)), mapopts.WithValueValidator[string, int](com.ValidatorFn[int](ValidateNum)))
 	mapvJWRrmd358YxΔFbTfawohAΞΞ    = ord.NewValidMapSer(ord.String, map89KZyΔeUWMY73bC2RIToOAΞΞ, mapopts.WithLenValidator[string, map[*[]int][][]float32](com.ValidatorFn[int](ValidateLen)), mapopts.WithValueValidator[string, map[*[]int][][]float32](com.ValidatorFn[map[*[]int][][]float32](ValidateComplexMapValue)))
-	ptrGzR0RzrΣC1z2yTa8UMKDhwΞΞ    = ord.NewPtrSer(slicea9b54NTckjaAZ77kX9CsBAΞΞ)
-	ptrceΔUj8v42zbVCknwTKfRXwΞΞ    = ord.NewPtrSer(varint.Int)
+	ptrGzR0RzrΣC1z2yTa8UMKDhwΞΞ    = ord.NewPtrSer[[]int](slicea9b54NTckjaAZ77kX9CsBAΞΞ)
+	ptrP2qMjfiDo6EtΣxlQsΣELIgΞΞ    = ord.NewPtrSer[Struct](StructMUS)
+	ptrceΔUj8v42zbVCknwTKfRXwΞΞ    = ord.NewPtrSer[int](varint.Int)
 	slice3ΔOkaLLzjΔyjeGΔI5kD0QwΞΞ  = ord.NewSliceSer(raw.Float32)
 	slicea9b54NTckjaAZ77kX9CsBAΞΞ  = ord.NewSliceSer(varint.Int)
 	sliceadSpy8O6qUrsL27kWjDtvgΞΞ  = ord.NewSliceSer(varint.Int, slopts.WithLenSer[int](raw.Int))
@@ -357,4 +358,46 @@ func (s complexMapMUS) Size(v ComplexMap) (size int) {
 
 func (s complexMapMUS) Skip(bs []byte) (n int, err error) {
 	return mapvJWRrmd358YxΔFbTfawohAΞΞ.Skip(bs)
+}
+
+var StructMUS = structMUS{}
+
+type structMUS struct{}
+
+func (s structMUS) Marshal(v Struct, bs []byte) (n int) {
+	return
+}
+
+func (s structMUS) Unmarshal(bs []byte) (v Struct, n int, err error) {
+	return
+}
+
+func (s structMUS) Size(v Struct) (size int) {
+	return
+}
+
+func (s structMUS) Skip(bs []byte) (n int, err error) {
+	return
+}
+
+var PtrStructMUS = ptrStructMUS{}
+
+type ptrStructMUS struct{}
+
+func (s ptrStructMUS) Marshal(v PtrStruct, bs []byte) (n int) {
+	return ptrP2qMjfiDo6EtΣxlQsΣELIgΞΞ.Marshal(v.Ptr, bs)
+}
+
+func (s ptrStructMUS) Unmarshal(bs []byte) (v PtrStruct, n int, err error) {
+	v.Ptr, n, err = ptrP2qMjfiDo6EtΣxlQsΣELIgΞΞ.Unmarshal(bs)
+	return
+}
+
+func (s ptrStructMUS) Size(v PtrStruct) (size int) {
+	return ptrP2qMjfiDo6EtΣxlQsΣELIgΞΞ.Size(v.Ptr)
+}
+
+func (s ptrStructMUS) Skip(bs []byte) (n int, err error) {
+	n, err = ptrP2qMjfiDo6EtΣxlQsΣELIgΞΞ.Skip(bs)
+	return
 }

@@ -56,7 +56,7 @@
 {{- /* ptr type */}}
 			{{- if eq $ad.Kind.String "ptr" }}
 				{{- $elemSer := Ser.Elem $ad $gops }}
-				{{ $name }} = ord.NewPtrSer({{ $elemSer }})
+				{{ $name }} = ord.NewPtrSer[{{ Ser.RelName $ad.ElemType }}]({{ $elemSer }})
 			{{- end }}
 		{{- end }}
 	)

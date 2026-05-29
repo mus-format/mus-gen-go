@@ -105,6 +105,12 @@ func TestGenerate_Anon(t *testing.T) {
 	)
 	assertfatal.EqualError(t, err, nil)
 
+	// Prt Struct
+	err = g.AddStruct(reflect.TypeFor[types.Struct]())
+	assertfatal.EqualError(t, err, nil)
+	err = g.AddStruct(reflect.TypeFor[types.PtrStruct]())
+	assertfatal.EqualError(t, err, nil)
+
 	bs, err := g.Generate()
 	assertfatal.EqualError(t, err, nil)
 	err = os.WriteFile("../test/types/anon_mus.gen.go", bs, 0644)

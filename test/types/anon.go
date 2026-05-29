@@ -25,3 +25,8 @@ type ValidArray [3]int
 type ValidMap map[string]int
 
 type ComplexMap map[string]map[*[]int][][]float32
+
+type PtrStruct struct {
+	Ptr *Struct
+}
+type Struct struct{}

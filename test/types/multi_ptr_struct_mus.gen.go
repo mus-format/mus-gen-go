@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	ptrYHh3rdfcksWaWFk7eHXSXgΞΞ = ord.NewPtrSer(varint.Int16)
-	ptrcAmNSUk4Σ2KbOysZ5YKZHgΞΞ = ord.NewPtrSer(varint.Uint16)
+	ptrYHh3rdfcksWaWFk7eHXSXgΞΞ = ord.NewPtrSer[int16](varint.Int16)
+	ptrcAmNSUk4Σ2KbOysZ5YKZHgΞΞ = ord.NewPtrSer[uint16](varint.Uint16)
 )
 
 var MultiPtrStructMUS = multiPtrStructMUS{}
