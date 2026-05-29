@@ -57,6 +57,16 @@ func TestGenerated_Anon(t *testing.T) {
 	test.Test([]types.ValidSlice{[]int{1}}, types.ValidSliceMUS, t)
 	test.Test([]types.ValidArray{[3]int{1, 2, 3}}, types.ValidArrayMUS, t)
 	test.Test([]types.ValidMap{{"str": 1}}, types.ValidMapMUS, t)
+
+	// Custom struct fields testing
+	st := types.Struct{}
+	test.Test([]types.PtrStruct{{Ptr: &st}}, types.PtrStructMUS, t)
+	test.Test([]types.MapStruct{{Map: map[string]types.Struct{"key": st}}}, types.MapStructMUS, t)
+	test.Test([]types.SliceStruct{{Slice: []types.Struct{st}}}, types.SliceStructMUS, t)
+
+	num1 := int16(10)
+	num2 := uint16(20)
+	test.Test([]types.MultiPtrStruct{{Num1: &num1, Num2: &num2}}, types.MultiPtrStructMUS, t)
 }
 
 func TestGenerated_ComplexAnon(t *testing.T) {

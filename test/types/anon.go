@@ -39,3 +39,10 @@ type SliceStruct struct {
 }
 
 type Struct struct{}
+
+type MultiPtrStruct struct {
+	Num1 *int16
+	Num2 *uint16
+}
+
+

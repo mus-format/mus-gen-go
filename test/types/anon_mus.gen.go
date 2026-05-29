@@ -26,6 +26,8 @@ var (
 	mapvJWRrmd358YxΔFbTfawohAΞΞ    = ord.NewValidMapSer[string, map[*[]int][][]float32](ord.String, map89KZyΔeUWMY73bC2RIToOAΞΞ, mapopts.WithLenValidator[string, map[*[]int][][]float32](com.ValidatorFn[int](ValidateLen)), mapopts.WithValueValidator[string, map[*[]int][][]float32](com.ValidatorFn[map[*[]int][][]float32](ValidateComplexMapValue)))
 	ptrGzR0RzrΣC1z2yTa8UMKDhwΞΞ    = ord.NewPtrSer[[]int](slicea9b54NTckjaAZ77kX9CsBAΞΞ)
 	ptrP2qMjfiDo6EtΣxlQsΣELIgΞΞ    = ord.NewPtrSer[Struct](StructMUS)
+	ptrYHh3rdfcksWaWFk7eHXSXgΞΞ    = ord.NewPtrSer[int16](varint.Int16)
+	ptrcAmNSUk4Σ2KbOysZ5YKZHgΞΞ    = ord.NewPtrSer[uint16](varint.Uint16)
 	ptrceΔUj8v42zbVCknwTKfRXwΞΞ    = ord.NewPtrSer[int](varint.Int)
 	slice3ΔOkaLLzjΔyjeGΔI5kD0QwΞΞ  = ord.NewSliceSer[float32](raw.Float32)
 	slicea9b54NTckjaAZ77kX9CsBAΞΞ  = ord.NewSliceSer[int](varint.Int)
@@ -445,5 +447,41 @@ func (s sliceStructMUS) Size(v SliceStruct) (size int) {
 
 func (s sliceStructMUS) Skip(bs []byte) (n int, err error) {
 	n, err = slicewhtdz4o0ieFFORszI7KVjQΞΞ.Skip(bs)
+	return
+}
+
+var MultiPtrStructMUS = multiPtrStructMUS{}
+
+type multiPtrStructMUS struct{}
+
+func (s multiPtrStructMUS) Marshal(v MultiPtrStruct, bs []byte) (n int) {
+	n = ptrYHh3rdfcksWaWFk7eHXSXgΞΞ.Marshal(v.Num1, bs)
+	return n + ptrcAmNSUk4Σ2KbOysZ5YKZHgΞΞ.Marshal(v.Num2, bs[n:])
+}
+
+func (s multiPtrStructMUS) Unmarshal(bs []byte) (v MultiPtrStruct, n int, err error) {
+	v.Num1, n, err = ptrYHh3rdfcksWaWFk7eHXSXgΞΞ.Unmarshal(bs)
+	if err != nil {
+		return
+	}
+	var n1 int
+	v.Num2, n1, err = ptrcAmNSUk4Σ2KbOysZ5YKZHgΞΞ.Unmarshal(bs[n:])
+	n += n1
+	return
+}
+
+func (s multiPtrStructMUS) Size(v MultiPtrStruct) (size int) {
+	size = ptrYHh3rdfcksWaWFk7eHXSXgΞΞ.Size(v.Num1)
+	return size + ptrcAmNSUk4Σ2KbOysZ5YKZHgΞΞ.Size(v.Num2)
+}
+
+func (s multiPtrStructMUS) Skip(bs []byte) (n int, err error) {
+	n, err = ptrYHh3rdfcksWaWFk7eHXSXgΞΞ.Skip(bs)
+	if err != nil {
+		return
+	}
+	var n1 int
+	n1, err = ptrcAmNSUk4Σ2KbOysZ5YKZHgΞΞ.Skip(bs[n:])
+	n += n1
 	return
 }
