@@ -25,7 +25,7 @@ const (
 var (
 	arraykhqoj8H1iZDaFGbnRRNCSQΞΞ = unsafe.NewArraySer[[10]int](unsafe.Int)
 	mapHfQsz6AeCIBt4MICw0pP6QΞΞ   = ord.NewMapSer(ord.String, unsafe.Int)
-	ptrTZrSs3BTZxtZSyN70GGz8gΞΞ   = ord.NewPtrSer(unsafe.Int)
+	ptrceΔUj8v42zbVCknwTKfRXwΞΞ   = ord.NewPtrSer(unsafe.Int)
 	slicea9b54NTckjaAZ77kX9CsBAΞΞ = ord.NewSliceSer(unsafe.Int)
 )
 
@@ -343,7 +343,7 @@ func (s fullStructMUS) Marshal(v mode.FullStruct, w mus.Writer) (n int, err erro
 	if err != nil {
 		return
 	}
-	n1, err = ptrTZrSs3BTZxtZSyN70GGz8gΞΞ.Marshal(v.PtrInt, w)
+	n1, err = ptrceΔUj8v42zbVCknwTKfRXwΞΞ.Marshal(v.PtrInt, w)
 	n += n1
 	if err != nil {
 		return
@@ -469,7 +469,7 @@ func (s fullStructMUS) Unmarshal(r mus.Reader) (v mode.FullStruct, n int, err er
 	if err != nil {
 		return
 	}
-	v.PtrInt, n1, err = ptrTZrSs3BTZxtZSyN70GGz8gΞΞ.Unmarshal(r)
+	v.PtrInt, n1, err = ptrceΔUj8v42zbVCknwTKfRXwΞΞ.Unmarshal(r)
 	n += n1
 	if err != nil {
 		return
@@ -523,7 +523,7 @@ func (s fullStructMUS) Size(v mode.FullStruct) (size int) {
 	size += ord.ByteSlice.Size(v.ByteSlice)
 	size += ord.ByteSlice.Size(v.Uint8Slice)
 	size += unsafe.TimeUnixUTC.Size(v.Time)
-	size += ptrTZrSs3BTZxtZSyN70GGz8gΞΞ.Size(v.PtrInt)
+	size += ptrceΔUj8v42zbVCknwTKfRXwΞΞ.Size(v.PtrInt)
 	size += arraykhqoj8H1iZDaFGbnRRNCSQΞΞ.Size(v.ArrayInt)
 	size += slicea9b54NTckjaAZ77kX9CsBAΞΞ.Size(v.SliceInt)
 	size += mapHfQsz6AeCIBt4MICw0pP6QΞΞ.Size(v.MapStrInt)
@@ -623,7 +623,7 @@ func (s fullStructMUS) Skip(r mus.Reader) (n int, err error) {
 	if err != nil {
 		return
 	}
-	n1, err = ptrTZrSs3BTZxtZSyN70GGz8gΞΞ.Skip(r)
+	n1, err = ptrceΔUj8v42zbVCknwTKfRXwΞΞ.Skip(r)
 	n += n1
 	if err != nil {
 		return

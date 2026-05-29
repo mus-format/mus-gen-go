@@ -254,7 +254,9 @@ func anonSerName(kind spec.AnonKind, t scanner.TypeInfo[typename.FullName],
 		bs = append(bs, []byte(tops.KeyValidator)...)
 		bs = append(bs, []byte(tops.ElemValidator)...)
 	case spec.AnonKindPtr:
-		bs = append(bs, []byte(t.ElemType)...)
+		bs = append(bs, []byte(t.Stars)...)
+		bs = append(bs, []byte(t.PkgPath)...)
+		bs = append(bs, []byte(t.Name)...)
 	}
 	h := md5.Sum(bs)
 	return spec.AnonSerName(kind.String() + Base64KeywordEncoding.EncodeToString(h[:]))

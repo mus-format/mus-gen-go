@@ -18,13 +18,13 @@ var (
 	array5OgmvUg3UeD4dq6anVO3QAΞΞ  = unsafe.NewArraySer[[3]int](varint.Int, arropts.WithLenSer[int](raw.Int))
 	arrayk1TPΣVicOyoeZCerey6UjQΞΞ  = unsafe.NewValidArraySer[[3]int](varint.Int, arropts.WithElemValidator[int](com.ValidatorFn[int](ValidateNum)))
 	arraykhqoj8H1iZDaFGbnRRNCSQΞΞ  = unsafe.NewArraySer[[3]int](varint.Int)
-	map89KZyΔeUWMY73bC2RIToOAΞΞ    = ord.NewMapSer(ptr0214kv7I0GdafVGafSg68gΞΞ, slicegZDr1Nz2sdCWxS01Iu9ΣqAΞΞ)
+	map89KZyΔeUWMY73bC2RIToOAΞΞ    = ord.NewMapSer(ptrGzR0RzrΣC1z2yTa8UMKDhwΞΞ, slicegZDr1Nz2sdCWxS01Iu9ΣqAΞΞ)
 	mapDSkPadp5azAvSTicXTzBQAΞΞ    = ord.NewMapSer(ord.String, varint.Int, mapopts.WithLenSer[string, int](raw.Int))
 	mapHfQsz6AeCIBt4MICw0pP6QΞΞ    = ord.NewMapSer(ord.String, varint.Int)
 	mapq2eFIqbCNvksgCaR1ΔhΔpwΞΞ    = ord.NewValidMapSer(ord.String, varint.Int, mapopts.WithLenValidator[string, int](com.ValidatorFn[int](ValidateLen)), mapopts.WithKeyValidator[string, int](com.ValidatorFn[string](ValidateStr)), mapopts.WithValueValidator[string, int](com.ValidatorFn[int](ValidateNum)))
 	mapvJWRrmd358YxΔFbTfawohAΞΞ    = ord.NewValidMapSer(ord.String, map89KZyΔeUWMY73bC2RIToOAΞΞ, mapopts.WithLenValidator[string, map[*[]int][][]float32](com.ValidatorFn[int](ValidateLen)), mapopts.WithValueValidator[string, map[*[]int][][]float32](com.ValidatorFn[map[*[]int][][]float32](ValidateComplexMapValue)))
-	ptr0214kv7I0GdafVGafSg68gΞΞ    = ord.NewPtrSer(slicea9b54NTckjaAZ77kX9CsBAΞΞ)
-	ptrTZrSs3BTZxtZSyN70GGz8gΞΞ    = ord.NewPtrSer(varint.Int)
+	ptrGzR0RzrΣC1z2yTa8UMKDhwΞΞ    = ord.NewPtrSer(slicea9b54NTckjaAZ77kX9CsBAΞΞ)
+	ptrceΔUj8v42zbVCknwTKfRXwΞΞ    = ord.NewPtrSer(varint.Int)
 	slice3ΔOkaLLzjΔyjeGΔI5kD0QwΞΞ  = ord.NewSliceSer(raw.Float32)
 	slicea9b54NTckjaAZ77kX9CsBAΞΞ  = ord.NewSliceSer(varint.Int)
 	sliceadSpy8O6qUrsL27kWjDtvgΞΞ  = ord.NewSliceSer(varint.Int, slopts.WithLenSer[int](raw.Int))
@@ -214,11 +214,11 @@ var PtrMUS = ptrMUS{}
 type ptrMUS struct{}
 
 func (s ptrMUS) Marshal(v Ptr, bs []byte) (n int) {
-	return ptrTZrSs3BTZxtZSyN70GGz8gΞΞ.Marshal((*int)(v), bs)
+	return ptrceΔUj8v42zbVCknwTKfRXwΞΞ.Marshal((*int)(v), bs)
 }
 
 func (s ptrMUS) Unmarshal(bs []byte) (v Ptr, n int, err error) {
-	tmp, n, err := ptrTZrSs3BTZxtZSyN70GGz8gΞΞ.Unmarshal(bs)
+	tmp, n, err := ptrceΔUj8v42zbVCknwTKfRXwΞΞ.Unmarshal(bs)
 	if err != nil {
 		return
 	}
@@ -227,11 +227,11 @@ func (s ptrMUS) Unmarshal(bs []byte) (v Ptr, n int, err error) {
 }
 
 func (s ptrMUS) Size(v Ptr) (size int) {
-	return ptrTZrSs3BTZxtZSyN70GGz8gΞΞ.Size((*int)(v))
+	return ptrceΔUj8v42zbVCknwTKfRXwΞΞ.Size((*int)(v))
 }
 
 func (s ptrMUS) Skip(bs []byte) (n int, err error) {
-	return ptrTZrSs3BTZxtZSyN70GGz8gΞΞ.Skip(bs)
+	return ptrceΔUj8v42zbVCknwTKfRXwΞΞ.Skip(bs)
 }
 
 var ValidStringMUS = validStringMUS{}
