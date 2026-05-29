@@ -29,4 +29,13 @@ type ComplexMap map[string]map[*[]int][][]float32
 type PtrStruct struct {
 	Ptr *Struct
 }
+
+type MapStruct struct {
+	Map map[string]Struct
+}
+
+type SliceStruct struct {
+	Slice []Struct
+}
+
 type Struct struct{}

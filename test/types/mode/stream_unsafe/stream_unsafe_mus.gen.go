@@ -24,9 +24,9 @@ const (
 
 var (
 	arraykhqoj8H1iZDaFGbnRRNCSQΞΞ = unsafe.NewArraySer[[10]int](unsafe.Int)
-	mapHfQsz6AeCIBt4MICw0pP6QΞΞ   = ord.NewMapSer(unsafe.String, unsafe.Int)
+	mapHfQsz6AeCIBt4MICw0pP6QΞΞ   = ord.NewMapSer[string, int](unsafe.String, unsafe.Int)
 	ptrceΔUj8v42zbVCknwTKfRXwΞΞ   = ord.NewPtrSer[int](unsafe.Int)
-	slicea9b54NTckjaAZ77kX9CsBAΞΞ = ord.NewSliceSer(unsafe.Int)
+	slicea9b54NTckjaAZ77kX9CsBAΞΞ = ord.NewSliceSer[int](unsafe.Int)
 )
 
 var FullDefinedMUS = fullDefinedMUS{}

@@ -111,6 +111,14 @@ func TestGenerate_Anon(t *testing.T) {
 	err = g.AddStruct(reflect.TypeFor[types.PtrStruct]())
 	assertfatal.EqualError(t, err, nil)
 
+	// Map Struct
+	err = g.AddStruct(reflect.TypeFor[types.MapStruct]())
+	assertfatal.EqualError(t, err, nil)
+
+	// Slice Struct
+	err = g.AddStruct(reflect.TypeFor[types.SliceStruct]())
+	assertfatal.EqualError(t, err, nil)
+
 	bs, err := g.Generate()
 	assertfatal.EqualError(t, err, nil)
 	err = os.WriteFile("../test/types/anon_mus.gen.go", bs, 0644)

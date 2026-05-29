@@ -40,7 +40,7 @@
 				{{- else }}
 					{{- $constructorName = "NewSliceSer" }}
 				{{- end }}
-				{{ $name }} = ord.{{ $constructorName }}({{ $elemSer }}{{ Tmpl.WithComma (Ser.SliceOpts $ad) }})
+				{{ $name }} = ord.{{ $constructorName }}[{{ Ser.RelName $ad.ElemType }}]({{ $elemSer }}{{ Tmpl.WithComma (Ser.SliceOpts $ad) }})
 			{{- end }}
 {{- /* map type */}}
 			{{- if eq $ad.Kind.String "map" }}
@@ -51,7 +51,7 @@
 				{{- else}}
 					{{- $constructorName = "NewMapSer" }}
 				{{- end }}
-				{{ $name }} = ord.{{ $constructorName }}({{ $keySer}}, {{ $elemSer }}{{ Tmpl.WithComma (Ser.MapOpts $ad) }})
+				{{ $name }} = ord.{{ $constructorName }}[{{ Ser.RelName $ad.KeyType }}, {{ Ser.RelName $ad.ElemType }}]({{ $keySer}}, {{ $elemSer }}{{ Tmpl.WithComma (Ser.MapOpts $ad) }})
 			{{- end }}
 {{- /* ptr type */}}
 			{{- if eq $ad.Kind.String "ptr" }}

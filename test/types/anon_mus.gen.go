@@ -18,19 +18,21 @@ var (
 	array5OgmvUg3UeD4dq6anVO3QAΞΞ  = unsafe.NewArraySer[[3]int](varint.Int, arropts.WithLenSer[int](raw.Int))
 	arrayk1TPΣVicOyoeZCerey6UjQΞΞ  = unsafe.NewValidArraySer[[3]int](varint.Int, arropts.WithElemValidator[int](com.ValidatorFn[int](ValidateNum)))
 	arraykhqoj8H1iZDaFGbnRRNCSQΞΞ  = unsafe.NewArraySer[[3]int](varint.Int)
-	map89KZyΔeUWMY73bC2RIToOAΞΞ    = ord.NewMapSer(ptrGzR0RzrΣC1z2yTa8UMKDhwΞΞ, slicegZDr1Nz2sdCWxS01Iu9ΣqAΞΞ)
-	mapDSkPadp5azAvSTicXTzBQAΞΞ    = ord.NewMapSer(ord.String, varint.Int, mapopts.WithLenSer[string, int](raw.Int))
-	mapHfQsz6AeCIBt4MICw0pP6QΞΞ    = ord.NewMapSer(ord.String, varint.Int)
-	mapq2eFIqbCNvksgCaR1ΔhΔpwΞΞ    = ord.NewValidMapSer(ord.String, varint.Int, mapopts.WithLenValidator[string, int](com.ValidatorFn[int](ValidateLen)), mapopts.WithKeyValidator[string, int](com.ValidatorFn[string](ValidateStr)), mapopts.WithValueValidator[string, int](com.ValidatorFn[int](ValidateNum)))
-	mapvJWRrmd358YxΔFbTfawohAΞΞ    = ord.NewValidMapSer(ord.String, map89KZyΔeUWMY73bC2RIToOAΞΞ, mapopts.WithLenValidator[string, map[*[]int][][]float32](com.ValidatorFn[int](ValidateLen)), mapopts.WithValueValidator[string, map[*[]int][][]float32](com.ValidatorFn[map[*[]int][][]float32](ValidateComplexMapValue)))
+	map3H19Zv6tpd93ZnWuxgbA2wΞΞ    = ord.NewMapSer[string, Struct](ord.String, StructMUS)
+	map89KZyΔeUWMY73bC2RIToOAΞΞ    = ord.NewMapSer[*[]int, [][]float32](ptrGzR0RzrΣC1z2yTa8UMKDhwΞΞ, slicegZDr1Nz2sdCWxS01Iu9ΣqAΞΞ)
+	mapDSkPadp5azAvSTicXTzBQAΞΞ    = ord.NewMapSer[string, int](ord.String, varint.Int, mapopts.WithLenSer[string, int](raw.Int))
+	mapHfQsz6AeCIBt4MICw0pP6QΞΞ    = ord.NewMapSer[string, int](ord.String, varint.Int)
+	mapq2eFIqbCNvksgCaR1ΔhΔpwΞΞ    = ord.NewValidMapSer[string, int](ord.String, varint.Int, mapopts.WithLenValidator[string, int](com.ValidatorFn[int](ValidateLen)), mapopts.WithKeyValidator[string, int](com.ValidatorFn[string](ValidateStr)), mapopts.WithValueValidator[string, int](com.ValidatorFn[int](ValidateNum)))
+	mapvJWRrmd358YxΔFbTfawohAΞΞ    = ord.NewValidMapSer[string, map[*[]int][][]float32](ord.String, map89KZyΔeUWMY73bC2RIToOAΞΞ, mapopts.WithLenValidator[string, map[*[]int][][]float32](com.ValidatorFn[int](ValidateLen)), mapopts.WithValueValidator[string, map[*[]int][][]float32](com.ValidatorFn[map[*[]int][][]float32](ValidateComplexMapValue)))
 	ptrGzR0RzrΣC1z2yTa8UMKDhwΞΞ    = ord.NewPtrSer[[]int](slicea9b54NTckjaAZ77kX9CsBAΞΞ)
 	ptrP2qMjfiDo6EtΣxlQsΣELIgΞΞ    = ord.NewPtrSer[Struct](StructMUS)
 	ptrceΔUj8v42zbVCknwTKfRXwΞΞ    = ord.NewPtrSer[int](varint.Int)
-	slice3ΔOkaLLzjΔyjeGΔI5kD0QwΞΞ  = ord.NewSliceSer(raw.Float32)
-	slicea9b54NTckjaAZ77kX9CsBAΞΞ  = ord.NewSliceSer(varint.Int)
-	sliceadSpy8O6qUrsL27kWjDtvgΞΞ  = ord.NewSliceSer(varint.Int, slopts.WithLenSer[int](raw.Int))
-	slicegZDr1Nz2sdCWxS01Iu9ΣqAΞΞ  = ord.NewSliceSer(slice3ΔOkaLLzjΔyjeGΔI5kD0QwΞΞ)
-	slicenCeoXNSYzlok379Yg0oL1gΞΞ  = ord.NewValidSliceSer(varint.Int, slopts.WithLenValidator[int](com.ValidatorFn[int](ValidateLen)), slopts.WithElemValidator[int](com.ValidatorFn[int](ValidateNum)))
+	slice3ΔOkaLLzjΔyjeGΔI5kD0QwΞΞ  = ord.NewSliceSer[float32](raw.Float32)
+	slicea9b54NTckjaAZ77kX9CsBAΞΞ  = ord.NewSliceSer[int](varint.Int)
+	sliceadSpy8O6qUrsL27kWjDtvgΞΞ  = ord.NewSliceSer[int](varint.Int, slopts.WithLenSer[int](raw.Int))
+	slicegZDr1Nz2sdCWxS01Iu9ΣqAΞΞ  = ord.NewSliceSer[[]float32](slice3ΔOkaLLzjΔyjeGΔI5kD0QwΞΞ)
+	slicenCeoXNSYzlok379Yg0oL1gΞΞ  = ord.NewValidSliceSer[int](varint.Int, slopts.WithLenValidator[int](com.ValidatorFn[int](ValidateLen)), slopts.WithElemValidator[int](com.ValidatorFn[int](ValidateNum)))
+	slicewhtdz4o0ieFFORszI7KVjQΞΞ  = ord.NewSliceSer[Struct](StructMUS)
 	stringCf1Ey8FtcNLgmRwz5SpmsAΞΞ = ord.NewValidStringSer(stropts.WithLenValidator(com.ValidatorFn[int](ValidateLen)))
 	stringqFVnrHp7ZΣjJ2aVgZZfKSwΞΞ = ord.NewStringSer(stropts.WithLenSer(raw.Int))
 )
@@ -399,5 +401,49 @@ func (s ptrStructMUS) Size(v PtrStruct) (size int) {
 
 func (s ptrStructMUS) Skip(bs []byte) (n int, err error) {
 	n, err = ptrP2qMjfiDo6EtΣxlQsΣELIgΞΞ.Skip(bs)
+	return
+}
+
+var MapStructMUS = mapStructMUS{}
+
+type mapStructMUS struct{}
+
+func (s mapStructMUS) Marshal(v MapStruct, bs []byte) (n int) {
+	return map3H19Zv6tpd93ZnWuxgbA2wΞΞ.Marshal(v.Map, bs)
+}
+
+func (s mapStructMUS) Unmarshal(bs []byte) (v MapStruct, n int, err error) {
+	v.Map, n, err = map3H19Zv6tpd93ZnWuxgbA2wΞΞ.Unmarshal(bs)
+	return
+}
+
+func (s mapStructMUS) Size(v MapStruct) (size int) {
+	return map3H19Zv6tpd93ZnWuxgbA2wΞΞ.Size(v.Map)
+}
+
+func (s mapStructMUS) Skip(bs []byte) (n int, err error) {
+	n, err = map3H19Zv6tpd93ZnWuxgbA2wΞΞ.Skip(bs)
+	return
+}
+
+var SliceStructMUS = sliceStructMUS{}
+
+type sliceStructMUS struct{}
+
+func (s sliceStructMUS) Marshal(v SliceStruct, bs []byte) (n int) {
+	return slicewhtdz4o0ieFFORszI7KVjQΞΞ.Marshal(v.Slice, bs)
+}
+
+func (s sliceStructMUS) Unmarshal(bs []byte) (v SliceStruct, n int, err error) {
+	v.Slice, n, err = slicewhtdz4o0ieFFORszI7KVjQΞΞ.Unmarshal(bs)
+	return
+}
+
+func (s sliceStructMUS) Size(v SliceStruct) (size int) {
+	return slicewhtdz4o0ieFFORszI7KVjQΞΞ.Size(v.Slice)
+}
+
+func (s sliceStructMUS) Skip(bs []byte) (n int, err error) {
+	n, err = slicewhtdz4o0ieFFORszI7KVjQΞΞ.Skip(bs)
 	return
 }
